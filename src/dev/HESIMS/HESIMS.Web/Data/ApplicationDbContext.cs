@@ -19,7 +19,6 @@ public class ApplicationDbContext : IdentityDbContext
 
     public DbSet<CourseApplication> CourseApplications { get; set; } = default!;
 
-
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder); // This is required for IdentityDbContext to work.
