@@ -23,6 +23,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ./src/dev/HESIMS/HESIMS.sln
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build ./src/dev/HESIMS/HESIMS.sln --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test ./src/dev/HESIMS/HESIMS.sln --no-build --verbosity normal
