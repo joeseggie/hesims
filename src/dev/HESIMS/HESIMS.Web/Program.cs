@@ -1,5 +1,6 @@
 using HESIMS.Web.Areas.Identity;
 using HESIMS.Web.Data;
+using HESIMS.Web.Data.Services;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -21,6 +22,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddSingleton<IApplicantService, ApplicantService>();
 
 var app = builder.Build();
 

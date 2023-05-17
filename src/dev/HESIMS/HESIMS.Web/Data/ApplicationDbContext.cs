@@ -7,6 +7,18 @@ public class ApplicationDbContext : IdentityDbContext
     {
     }
 
+    public DbSet<Scholarship> Scholarships { get; set; } = default!;
+
+    public DbSet<Course> Courses { get; set; } = default!;
+
+    public DbSet<Applicant> Applicants { get; set; } = default!;
+
+    public DbSet<ApplicationCycle> ApplicationCycles { get; set; } = default!;
+
+    public DbSet<ApplicationCycleCourse> ApplicationCycleCourses { get; set; } = default!;
+
+    public DbSet<CourseApplication> CourseApplications { get; set; } = default!;
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder); // This is required for IdentityDbContext to work.
