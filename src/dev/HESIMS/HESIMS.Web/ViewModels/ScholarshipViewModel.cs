@@ -23,7 +23,9 @@ public record ScholarshipViewModel
     /// <summary>
     /// Validates the scholarship view model.
     /// </summary>
-    public ValidationResult Validate()
+    /// <param name="routeScholarshipId">Scholarship Id with the request route.</param>
+    /// <param name="validateId">Validate Id.</param>
+    public ValidationResult Validate(Guid? routeScholarshipId = null, bool validateId = false)
     {
         var validationResult = new ValidationResult
         {
@@ -40,6 +42,19 @@ public record ScholarshipViewModel
         {
             validationResult.IsValid = false;
             validationResult.ErrorMessage = "Country is required.";
+        }
+
+        var isEmptyOrDefaultGuidScholarshipId = !ScholarshipId.HasValue && ScholarshipId == Guid.Empty;
+        if (validateId && isEmptyOrDefaultGuidScholarshipId)
+        {
+            validationResult.IsValid = false;
+            validationResult.ErrorMessage = "Scholarship ID is required.";
+        }
+
+        if (validateId && ScholarshipId != routeScholarshipId)
+        {
+            validationResult.IsValid = false;
+            validationResult.ErrorMessage = "Scholarship ID mismatch.";
         }
         
         return validationResult;
