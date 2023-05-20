@@ -59,7 +59,13 @@ public class ApplicationCycleService : IApplicationCycleService
     /// <inheritdoc/>
     public async Task<ApplicationCycle> UpdateApplicationCycleAsync(ApplicationCycle applicationCycle)
     {
-        db.ApplicationCycles.Update(applicationCycle);
+        var existingApplicationCycle = await db.ApplicationCycles.FindAsync(applicationCycle.Id);
+        if (existingApplicationCycle == null)
+        {
+            throw new ArgumentException($"Application cycle with ID {applicationCycle.Id} does not exist.");
+        }
+
+        db.Entry(existingApplicationCycle).CurrentValues.SetValues(applicationCycle);
         await db.SaveChangesAsync();
         return applicationCycle;
     }

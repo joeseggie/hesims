@@ -77,7 +77,13 @@ public class ScholarshipService : IScholarshipService
     /// <inheritdoc />
     public async Task<Scholarship> UpdateScholarshipAsync(Scholarship scholarship)
     {
-        db.Scholarships.Update(scholarship);
+        var existingScholarship = await GetScholarshipByIdAsync(scholarship.Id);
+        if (existingScholarship == null)
+        {
+            throw new ArgumentException($"Scholarship with ID {scholarship.Id} does not exist.");
+        }
+
+        db.Entry(existingScholarship).CurrentValues.SetValues(scholarship);
         await db.SaveChangesAsync();
         return scholarship;
     }

@@ -64,7 +64,13 @@ public class ApplicantService : IApplicantService
     /// <inheritdoc/>
     public async Task<Applicant> UpdateApplicantAsync(Applicant applicant)
     {
-        db.Applicants.Update(applicant);
+        var existingApplicant = await db.Applicants.FindAsync(applicant.Id);
+        if (existingApplicant == null)
+        {
+            throw new ArgumentException($"Applicant with ID {applicant.Id} does not exist.");
+        }
+
+        db.Entry(existingApplicant).CurrentValues.SetValues(applicant);
         await db.SaveChangesAsync();
         return applicant;
     }
