@@ -5,7 +5,7 @@ namespace HESIMS.Web.Controllers;
 /// </summary>
 [Route("api/courses")]
 [ApiController]
-public class CoursesController : Controller
+public class CoursesController : BaseController
 {
     private readonly ICourseService courseService;
 
