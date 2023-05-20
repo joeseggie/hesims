@@ -5,7 +5,7 @@ namespace HESIMS.Web.Controllers;
 /// </summary>
 [Route("api/scholarships")]
 [ApiController]
-public class ScholarshipController : Controller
+public class ScholarshipController : BaseController
 {
     private readonly IScholarshipService scholarshipService;
 
