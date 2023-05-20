@@ -9,7 +9,7 @@ public interface IApplicantService
     /// Get applicants.
     /// </summary>
     /// <returns>List of applicants.</returns>
-    Task<IEnumerable<Applicant>>? GetApplicantsAsync();
+    Task<IEnumerable<Applicant>> GetApplicantsAsync();
 
     /// <summary>
     /// Add new applicant.
@@ -49,7 +49,7 @@ public class ApplicantService : IApplicantService
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<Applicant>>? GetApplicantsAsync()
+    public async Task<IEnumerable<Applicant>> GetApplicantsAsync()
     {
         return await db.Applicants.ToListAsync();
     }
