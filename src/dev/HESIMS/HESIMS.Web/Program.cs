@@ -1,13 +1,6 @@
-using HESIMS.Web.Areas.Identity;
-using HESIMS.Web.Data;
-using HESIMS.Web.Data.Services;
-
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.EntityFrameworkCore;
+/// <summary>
+/// App start up and configuration.
+/// </summary>
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,5 +48,8 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
