@@ -95,25 +95,15 @@ public class ScholarshipController : Controller
     [HttpPatch("{id}")]
     public async Task<IActionResult> UpdateScholarshipAsync(Guid id, [FromBody] ScholarshipViewModel scholarship)
     {
-        var validationResult = scholarship.Validate();
+        var validationResult = scholarship.Validate(routeScholarshipId: id, validateId: true);
         if (!validationResult.IsValid)
         {
             return BadRequest(validationResult.ErrorMessage);
         }
 
-        if (scholarship.ScholarshipId == null)
-        {
-            return BadRequest("Scholarship ID is required.");
-        }
-
-        if (id != scholarship.ScholarshipId.Value)
-        {
-            return BadRequest("Scholarship ID mismatch.");
-        }
-
         var updatedScholarship = await scholarshipService.UpdateScholarshipAsync(new Scholarship
         {
-            Id = scholarship.ScholarshipId.Value,
+            Id = id,
             Name = scholarship.ScholarshipName,
             Country = scholarship.Country
         });
