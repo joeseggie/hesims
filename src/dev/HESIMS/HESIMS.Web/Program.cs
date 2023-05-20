@@ -20,9 +20,15 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 builder.Services.AddSingleton<WeatherForecastService>();
-builder.Services.AddSingleton<IApplicantService, ApplicantService>();
+builder.Services.AddScoped<IApplicantService, ApplicantService>();
+builder.Services.AddScoped<IApplicationCycleCourseService, ApplicationCycleCourseService>();
+builder.Services.AddScoped<IApplicationCycleService, ApplicationCycleService>();
+builder.Services.AddScoped<ICourseApplicationService, CourseApplicationService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<IScholarshipService, ScholarshipService>();
 
 var app = builder.Build();
 
