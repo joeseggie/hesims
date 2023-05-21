@@ -54,7 +54,6 @@ public class ApplicationCycleService : IApplicationCycleService
     public async Task AddApplicationCycleAsync(ApplicationCycle applicationCycle)
     {
         await db.ApplicationCycles.AddAsync(applicationCycle);
-        await db.SaveChangesAsync();
     }
 
     /// <inheritdoc/>

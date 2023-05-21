@@ -92,7 +92,7 @@ public class ScholarshipController : BaseController
             });
     }
 
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     public async Task<IActionResult> UpdateScholarshipAsync(Guid id, [FromBody] ScholarshipViewModel scholarship)
     {
         var validationResult = scholarship.Validate(routeScholarshipId: id, validateId: true);

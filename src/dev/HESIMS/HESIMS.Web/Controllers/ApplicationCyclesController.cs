@@ -82,19 +82,21 @@ public class ApplicationCyclesController : BaseController
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateApplicationCycleAsync(Guid id, [FromBody] ApplicationCycleViewModel applicationCycle)
     {
-        var validationResult = applicationCycle.Validate(routeId: id, validateId: true);
+        var validationResult = applicationCycle.Validate();
         if (!validationResult.IsValid)
         {
             return BadRequest(validationResult.ErrorMessage);
         }
 
         var scholarshipId = GetValueFromNullableGuid(applicationCycle.ScholarshipId);
-        var updatedApplicationCycle = await applicationCycleService.UpdateApplicationCycleAsync(new ApplicationCycle
+        var updatedApplicationCycle = new ApplicationCycle
         {
             Id = id,
             ScholarshipId = scholarshipId,
             AcademicYear = applicationCycle.AcademicYear
-        });
+        };
+
+        await applicationCycleService.UpdateApplicationCycleAsync(updatedApplicationCycle);
 
         return Ok(new ApplicationCycleViewModel
         {
