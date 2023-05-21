@@ -72,7 +72,7 @@ public class ApplicationCycleCoursesController : BaseController
         
         await applicationCycleCourseService.AddApplicationCycleCourseAsync(newApplicationCycleCourse);
         
-        return Ok(new ApplicationCycleCourseViewModel
+        return CreatedAtAction(nameof(GetApplicationCycleCourseByIdAsync), new { id = newApplicationCycleCourse.Id }, new ApplicationCycleCourseViewModel
         {
             ApplicationCycleCourseId = newApplicationCycleCourse.Id,
             ApplicationCycleId = newApplicationCycleCourse.ApplicationCycleId,
