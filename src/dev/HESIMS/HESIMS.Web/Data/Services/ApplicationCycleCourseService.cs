@@ -58,6 +58,7 @@ public class ApplicationCycleCourseService : IApplicationCycleCourseService
     public async Task AddApplicationCycleCourseAsync(ApplicationCycleCourse applicationCycleCourse)
     {
         await db.ApplicationCycleCourses.AddAsync(applicationCycleCourse);
+        await db.SaveChangesAsync();
     }
 
     /// <inheritdoc/>
