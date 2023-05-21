@@ -3,7 +3,7 @@ namespace HESIMS.Web.ViewModels;
 /// <summary>
 /// Application cycle course view model.
 /// </summary>
-public class ApplicationCycleCourseViewModel
+public record ApplicationCycleCourseViewModel
 {
     /// <summary>
     /// Gets or sets the application cycle course identifier.

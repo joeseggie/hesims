@@ -12,4 +12,15 @@ public class BaseController : Controller
 
         return guidValue;
     }
+
+    protected DateTimeOffset GetValueFromNullableDateTimeOffset(DateTimeOffset? nullableDateTimeOffset)
+    {
+        var dateTimeOffsetValue = nullableDateTimeOffset ?? DateTimeOffset.MinValue;
+        if (dateTimeOffsetValue == DateTimeOffset.MinValue)
+        {
+            throw new ArgumentException("DateTimeOffset value is empty");
+        }
+
+        return dateTimeOffsetValue;
+    }
 }
