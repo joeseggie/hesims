@@ -25,5 +25,13 @@ public class Applicant
     /// </summary>
     public string? OtherNames { get; set; }
 
+    /// <summary>
+    /// Courses applied for by the applicant.
+    /// </summary>
     public IEnumerable<CourseApplication>? CourseApplications { get; set; }
+
+    /// <summary>
+    /// Applicant's student profile.
+    /// </summary>
+    public Student? Student { get; set; }
 }
