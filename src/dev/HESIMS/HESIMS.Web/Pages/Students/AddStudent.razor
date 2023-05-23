@@ -1,0 +1,38 @@
+@page "/students/new"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Register Student</h3>
+
+<NavLink href="students" class="btn btn-primary">Students' list</NavLink><br /><br />
+
+<div class="col-8">
+    <form>
+        <div class="form-group">
+            <label>First name</label>
+            <input @bind="Applicant.Firstname" class="form-control" placeholder="First name">
+        </div><br />
+        <div class="form-group">
+            <label>Last name</label>
+            <input @bind="Applicant.Lastname" class="form-control" placeholder="Last name">
+        </div><br />
+        <div class="form-group">
+            <label>Other names</label>
+            <input @bind="Applicant.OtherNames" class="form-control" placeholder="Other names">
+        </div><br />
+        <button @onclick="Submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+@code {
+    [Parameter] public ApplicantViewModel Applicant { get; set; } = new ApplicantViewModel();
+
+    private async Task Submit()
+    {
+        var result = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}api/students", Applicant);
+        if (result.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo($"students/");
+        }
+    }
+}

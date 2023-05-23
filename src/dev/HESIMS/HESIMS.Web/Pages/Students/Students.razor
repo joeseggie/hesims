@@ -1,0 +1,46 @@
+﻿@page "/students"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>HESIMS - Registered Students</PageTitle>
+
+<h3>Registered Students</h3>
+
+<NavLink href="students/new" class="btn btn-primary">Add New Student</NavLink><br /><br />
+
+<table class="table table-bordered table-sm">
+    <thead>
+        <tr>
+            <th class="col-4">First name</th>
+            <th class="col-4">Last name</th>
+            <th class="col-4">Other names</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (applicants != null && applicants.Count > 0)
+        {
+            @foreach (var applicant in applicants)
+            {
+                <tr>
+                    <td class="col-4">
+                        <NavLink href="@($"students/{applicant.ApplicantId}")">@applicant.Firstname</NavLink>                        
+                    </td>
+                    <td class="col-4">
+                        <NavLink href="@($"students/{applicant.ApplicantId}")">@applicant.Lastname</NavLink>                        
+                    </td>
+                    <td class="col-4">@applicant.OtherNames</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+
+    List<ApplicantViewModel>? applicants = new List<ApplicantViewModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        applicants = await Http.GetFromJsonAsync<List<ApplicantViewModel>>($"{NavigationManager.BaseUri}api/applicants");
+    }
+}
