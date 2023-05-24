@@ -15,6 +15,8 @@ public class ApplicationCycle
     /// </summary>
     public Guid ScholarshipId { get; set; }
 
+    public string? Status { get; set; }
+
     /// <summary>
     /// Application cycle academic year.
     /// </summary>

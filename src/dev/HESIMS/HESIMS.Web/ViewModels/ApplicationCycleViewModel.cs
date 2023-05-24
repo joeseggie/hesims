@@ -21,6 +21,11 @@ public record ApplicationCycleViewModel
     public string? AcademicYear { get; set; }
 
     /// <summary>
+    /// Application cycle status.
+    /// </summary>
+    public string? Status { get; set; }
+
+    /// <summary>
     /// Validates the application cycle view model.
     /// </summary>
     /// <param name="applicationCycleId">Application cycle Id.</param>

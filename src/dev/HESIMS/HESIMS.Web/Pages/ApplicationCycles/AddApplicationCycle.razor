@@ -1,0 +1,46 @@
+@page "/application-cycles/new"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>HESIMS - Add Application Cycle</PageTitle>
+
+<h3>New Application Cycle</h3>
+<hr />
+<NavLink href="@($"scholarships/{Scholarship}")" class="btn btn-primary btn-sm">
+    Back to Scholarship Details
+</NavLink><br /><br />
+
+<div class="col-8">
+    <form>
+        <div class="form-group">
+            <label>Academic Year</label>
+            <input @bind="applicationCycle.AcademicYear" class="form-control" placeholder="Academic Year">
+        </div><br />
+        <button @onclick="CreateApplicationCycle" class="btn btn-danger btn-sm" type="submit">Save Changes</button>
+    </form>
+</div>
+
+@code {
+
+    [Parameter][SupplyParameterFromQuery] public Guid? Scholarship { get; set; }
+
+    private ApplicationCycle applicationCycle = new ApplicationCycle();
+
+    protected override void OnInitialized()
+    {
+        if (!Guid.TryParse(Scholarship.ToString(), out Guid scholarshipId))
+        {
+            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}scholarships/{Scholarship}", true);
+        }
+
+        applicationCycle.ScholarshipId = scholarshipId;
+    }
+
+    private async Task CreateApplicationCycle()
+    {
+        applicationCycle.Status = "Not Started";
+        await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}api/application-cycles", applicationCycle);
+        NavigationManager.NavigateTo($"{NavigationManager.BaseUri}scholarships/{applicationCycle.ScholarshipId}", true);
+    }
+
+}

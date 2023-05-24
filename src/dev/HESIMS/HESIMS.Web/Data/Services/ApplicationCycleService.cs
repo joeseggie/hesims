@@ -8,12 +8,17 @@ public interface IApplicationCycleService
     /// <summary>
     /// Get application cycles.
     /// </summary>
-    Task<IEnumerable<ApplicationCycle>> GetApplicationCyclesAsync();
+    /// <param name="scholarshipId">Scholarship ID.</param>
+    /// <param name="academicYear">Academic year.</param>
+    /// <param name="status">Application cycle status.</param>
+    /// <returns>List of application cycles.</returns>
+    Task<IEnumerable<ApplicationCycle>> GetApplicationCyclesAsync(Guid? scholarshipId = null, string? academicYear = null, string? status = null);
 
     /// <summary>
     /// Add new application cycle.
     /// </summary>
     /// <param name="applicationCycle">New application cycle details</param>
+    /// <returns>Added application cycle details.</returns>
     Task AddApplicationCycleAsync(ApplicationCycle applicationCycle);
 
     /// <summary>
@@ -45,15 +50,32 @@ public class ApplicationCycleService : IApplicationCycleService
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<ApplicationCycle>> GetApplicationCyclesAsync()
+    public async Task<IEnumerable<ApplicationCycle>> GetApplicationCyclesAsync(Guid? scholarshipId = null, string? academicYear = null, string? status = null)
     {
-        return await db.ApplicationCycles.ToListAsync();
+        var applicationCycles = db.ApplicationCycles.AsQueryable();
+        if (scholarshipId != null)
+        {
+            applicationCycles = applicationCycles.Where(applicationCycle => applicationCycle.ScholarshipId == scholarshipId);
+        }
+
+        if (academicYear != null)
+        {
+            applicationCycles = applicationCycles.Where(applicationCycle => applicationCycle.AcademicYear == academicYear);
+        }
+
+        if (status != null)
+        {
+            applicationCycles = applicationCycles.Where(applicationCycle => applicationCycle.Status == status);
+        }
+
+        return await applicationCycles.ToListAsync();
     }
     
     /// <inheritdoc/>
     public async Task AddApplicationCycleAsync(ApplicationCycle applicationCycle)
     {
         await db.ApplicationCycles.AddAsync(applicationCycle);
+        await db.SaveChangesAsync();
     }
 
     /// <inheritdoc/>
