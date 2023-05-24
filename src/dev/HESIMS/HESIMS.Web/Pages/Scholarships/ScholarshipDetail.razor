@@ -6,7 +6,10 @@
 
 <h3>Scholarship Details</h3>
 
-<NavLink href="/" class="btn btn-primary">Back to List</NavLink><br /><br />
+<div class="btn-group">
+    <NavLink href="/" class="btn btn-primary" aria-current="page">Scholarships List</NavLink>
+    <NavLink href="scholarships/new" class="btn btn-primary" aria-current="page">Add Scholarship</NavLink>
+</div><br /><br />
 
 @if (Scholarship != null)
 {
@@ -29,7 +32,8 @@
 @code {
 
     [Parameter] public Guid Id { get; set; }
-    [Parameter] public ScholarshipViewModel? Scholarship { get; set; } = new ScholarshipViewModel();
+
+    public ScholarshipViewModel? Scholarship { get; set; } = new ScholarshipViewModel();
 
     protected override async Task OnInitializedAsync()
     {

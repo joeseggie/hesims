@@ -26,7 +26,11 @@ public class CoursesController : BaseController
             return Ok(courses.Select(course => new CourseViewModel
             {
                 CourseId = course.Id,
-                CourseName = course.Name
+                CourseName = course.Name,
+                Institution = course.Institution,
+                InstitutionCountry = course.InstitutionCountry,
+                CourseLevel = course.CourseLevel,
+                Duration = course.Duration
             }));
         }
 
@@ -45,7 +49,11 @@ public class CoursesController : BaseController
         return Ok(new CourseViewModel
         {
             CourseId = course.Id,
-            CourseName = course.Name
+            CourseName = course.Name,
+            Institution = course.Institution,
+            InstitutionCountry = course.InstitutionCountry,
+            CourseLevel = course.CourseLevel,
+            Duration = course.Duration
         });
     }
 
@@ -61,7 +69,11 @@ public class CoursesController : BaseController
         var newCourse = new Course
         {
             Id = Guid.NewGuid(),
-            Name = course.CourseName
+            Name = course.CourseName,
+            Institution = course.Institution,
+            InstitutionCountry = course.InstitutionCountry,
+            CourseLevel = course.CourseLevel,
+            Duration = course.Duration
         };
 
         try
@@ -83,7 +95,11 @@ public class CoursesController : BaseController
              new CourseViewModel
              {
                  CourseId = newCourse.Id,
-                 CourseName = newCourse.Name
+                 CourseName = newCourse.Name,
+                 Institution = newCourse.Institution,
+                 InstitutionCountry = newCourse.InstitutionCountry,
+                 CourseLevel = newCourse.CourseLevel,
+                 Duration = newCourse.Duration
              });
     }
 
@@ -99,13 +115,21 @@ public class CoursesController : BaseController
         var updatedCourse = await courseService.UpdateCourseAsync(new Course
         {
             Id = id,
-            Name = course.CourseName
+            Name = course.CourseName,
+            Institution = course.Institution,
+            InstitutionCountry = course.InstitutionCountry,
+            CourseLevel = course.CourseLevel,
+            Duration = course.Duration
         });
 
         return Ok(new CourseViewModel
         {
             CourseId = updatedCourse.Id,
-            CourseName = updatedCourse.Name
+            CourseName = updatedCourse.Name,
+            Institution = updatedCourse.Institution,
+            InstitutionCountry = updatedCourse.InstitutionCountry,
+            CourseLevel = updatedCourse.CourseLevel,
+            Duration = updatedCourse.Duration
         });
     }
 }
