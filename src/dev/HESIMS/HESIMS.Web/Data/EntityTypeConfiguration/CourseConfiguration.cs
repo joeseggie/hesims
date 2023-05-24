@@ -13,6 +13,7 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
     {
         builder.HasKey(course => course.Id);
         builder.Property(course => course.Name).IsRequired();
-        builder.HasIndex(course => course.Name).IsUnique();
+        builder.Property(course => course.Institution).IsRequired();
+        builder.Property(course => course.InstitutionCountry).IsRequired();
     }
 }

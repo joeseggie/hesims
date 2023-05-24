@@ -1,4 +1,6 @@
-﻿@page "/addcourse"
+﻿@page "/courses/new"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <PageTitle>HESIMS - Add Course</PageTitle>
 
@@ -10,6 +12,43 @@
 <br />
 <br />
 
+<div class="col-8">
+    <form>
+        <div class="form-group">
+            <label>Course Name</label>
+            <input @bind="Course.CourseName" class="form-control" placeholder="Course name">
+        </div><br />
+        <div class="form-group">
+            <label>Institution</label>
+            <input @bind="Course.Institution" class="form-control" placeholder="Institution">
+        </div><br />
+        <div class="form-group">
+            <label>Duration</label>
+            <input @bind="Course.Duration" type="number" class="form-control" placeholder="Course duration">
+        </div><br />
+        <div class="form-group">
+            <label>Course Level</label>
+            <input @bind="Course.CourseLevel" class="form-control" placeholder="Course Level">
+        </div><br />
+        <div class="form-group">
+            <label>Country</label>
+            <input @bind="Course.InstitutionCountry" class="form-control" placeholder="Country">
+        </div><br />
+        <button @onclick="Submit" class="btn btn-primary" type="submit">Submit</button>
+    </form>
+</div>
+
 @code {
+
+    [Parameter] public CourseViewModel Course { get; set; } = new CourseViewModel();
+
+    private async Task Submit()
+    {
+        var response = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}api/courses", Course);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}courses", true);
+        }
+    }
 
 }

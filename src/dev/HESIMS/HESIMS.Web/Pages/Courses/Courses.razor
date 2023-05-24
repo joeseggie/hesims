@@ -1,11 +1,13 @@
 ﻿@page "/courses"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <PageTitle>HESIMS - Courses</PageTitle>
 
 <h3>Offered Courses List</h3>
 
 <div class="btn-group">
-    <NavLink href="addcourse" class="btn btn-primary">Add Course</NavLink>
+    <NavLink href="courses/new" class="btn btn-primary">Add Course</NavLink>
 </div>
 <br />
 <br />
@@ -14,19 +16,38 @@
     <thead>
         <tr>
             <th>Course</th>
-            <th class="col-2">Scholarships</th>
-            <th class="col-2">Applications</th>
+            <th class="col-3">Institution</th>
+            <th class="col-2">Country</th>
+            <th class="col-1">Duration (Years)</th>
+            <th class="col-2">Course Level</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td></td>
-            <td class="col-2"></td>
-            <td class="col-2"></td>
-        </tr>
+        @if (courses != null && courses.Count > 0)
+        {
+            foreach (var course in courses)
+            {
+                <tr>
+                    <td>
+                        <NavLink href="@($"courses/{course.CourseId}")">@course.CourseName</NavLink>
+                    </td>
+                    <td class="col-2">@course.Institution</td>
+                    <td class="col-2">@course.InstitutionCountry</td>
+                    <td class="col-1">@course.Duration</td>
+                    <td class="col-1">@course.CourseLevel</td>
+                </tr>
+            }
+        }
     </tbody>
 </table>
 
 @code {
+
+    private List<CourseViewModel>? courses = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        courses = await Http.GetFromJsonAsync<List<CourseViewModel>>($"{NavigationManager.BaseUri}api/courses");
+    }
 
 }
