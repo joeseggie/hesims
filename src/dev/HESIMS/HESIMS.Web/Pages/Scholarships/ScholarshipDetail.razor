@@ -1,0 +1,48 @@
+@page "/scholarships/{id:guid}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Scholarship Details</PageTitle>
+
+<h3>Scholarship Details</h3>
+
+<NavLink href="/" class="btn btn-primary">Back to List</NavLink><br /><br />
+
+@if (Scholarship != null)
+{
+    <div class="col-8">
+        <form>
+            <input type="hidden" @bind="Scholarship.ScholarshipId" />
+            <div class="form-group">
+                <label>Scholarship Program</label>
+                <input @bind="Scholarship.ScholarshipName" class="form-control" placeholder="Scholarship program">
+            </div><br />
+            <div class="form-group">
+                <label>Offering Country</label>
+                <input @bind="Scholarship.Country" class="form-control" placeholder="Offfering country">
+            </div><br />
+            <button @onclick="Submit" class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+}
+
+@code {
+
+    [Parameter] public Guid Id { get; set; }
+    [Parameter] public ScholarshipViewModel? Scholarship { get; set; } = new ScholarshipViewModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Scholarship = await Http.GetFromJsonAsync<ScholarshipViewModel>($"{NavigationManager.BaseUri}api/scholarships/{Id}");
+    }
+
+    private async Task Submit()
+    {
+        if (Scholarship != null)
+        {
+            await Http.PutAsJsonAsync<ScholarshipViewModel>($"{NavigationManager.BaseUri}api/scholarships/{Id}", Scholarship);
+            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}scholarships/{Id}");
+        }
+    }
+
+}
