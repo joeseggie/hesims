@@ -1,0 +1,65 @@
+@page "/application-cycles/{id:guid}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>HESIMS - Application Cycle Details</PageTitle>
+
+<h3>Application Cycle Details</h3>
+<hr />
+
+@if (applicationCycle != null)
+{
+    <div class="btn-group">
+        <NavLink href="@($"scholarships/{applicationCycle.ScholarshipId}")" class="btn btn-primary btn-sm">
+            Back to Scholarship Details
+        </NavLink>
+        <NavLink href="@($"application-cycles/new?scholarship={applicationCycle.ScholarshipId}")"
+            class="btn btn-primary btn-sm">
+            Add Application Cycle
+        </NavLink>
+    </div>
+
+    <br />
+
+    <br />
+    <div class="col-8">
+        <form>
+            <input type="hidden" @bind="applicationCycle.ApplicationCycleId" />
+            <input type="hidden" @bind="applicationCycle.ScholarshipId" />
+            <input type="hidden" @bind="applicationCycle.Status" />
+            <div class="form-group">
+                <label>Academic Year</label>
+                <input @bind="applicationCycle.AcademicYear" class="form-control" placeholder="Academic Year">
+            </div><br />
+            <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Save Changes</button>
+        </form>
+    </div>
+}
+
+@code {
+
+    [Parameter] public Guid Id { get; set; }
+
+    [Parameter][SupplyParameterFromQuery] public Guid? Scholarship { get; set; }
+
+    private ApplicationCycleViewModel? applicationCycle = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        applicationCycle = await
+        Http.GetFromJsonAsync<ApplicationCycleViewModel>($"{NavigationManager.BaseUri}api/application-cycles/{Id}");
+    }
+
+    async Task Submit()
+    {
+        if (applicationCycle != null)
+        {
+            await Http.PutAsJsonAsync<ApplicationCycleViewModel>(
+            $"{NavigationManager.BaseUri}api/application-cycles/{Id}",
+            applicationCycle);
+
+            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}application-cycles/{Id}?scholarship={applicationCycle.ScholarshipId}");
+        }
+    }
+
+}

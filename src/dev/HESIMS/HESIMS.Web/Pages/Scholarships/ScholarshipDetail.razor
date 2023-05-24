@@ -7,14 +7,15 @@
 <h3>Scholarship Details</h3>
 
 <div class="btn-group">
-    <NavLink href="/" class="btn btn-primary" aria-current="page">Scholarships List</NavLink>
-    <NavLink href="scholarships/new" class="btn btn-primary" aria-current="page">Add Scholarship</NavLink>
+    <NavLink href="/" class="btn btn-primary btn-sm" aria-current="page">Scholarships List</NavLink>
+    <NavLink href="scholarships/new" class="btn btn-primary btn-sm" aria-current="page">Add Scholarship</NavLink>
 </div><br /><br />
 
 @if (Scholarship != null)
 {
-    <div class="col-8">
-        <form>
+    <div class="card bg-light">
+        <div class="card-body">
+            <form>
             <input type="hidden" @bind="Scholarship.ScholarshipId" />
             <div class="form-group">
                 <label>Scholarship Program</label>
@@ -24,10 +25,14 @@
                 <label>Offering Country</label>
                 <input @bind="Scholarship.Country" class="form-control" placeholder="Offfering country">
             </div><br />
-            <button @onclick="Submit" class="btn btn-primary" type="submit">Submit</button>
+            <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Save Changes</button>
         </form>
+        </div>
     </div>
 }
+
+<br /><br />
+<ApplicationCycles ScholarshipId="@Id" />
 
 @code {
 

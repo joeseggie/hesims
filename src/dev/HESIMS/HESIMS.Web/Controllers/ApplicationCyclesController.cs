@@ -19,16 +19,17 @@ public class ApplicationCyclesController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetApplicationCyclesAsync()
+    public async Task<IActionResult> GetApplicationCyclesAsync([FromQuery] Guid? scholarship = null, [FromQuery] string? year = null)
     {
-        var applicationCycles = await applicationCycleService.GetApplicationCyclesAsync();
+        var applicationCycles = await applicationCycleService.GetApplicationCyclesAsync(scholarship, year);
         if (applicationCycles != null && applicationCycles.Count() > 0)
         {
             return Ok(applicationCycles.Select(applicationCycle => new ApplicationCycleViewModel
             {
                 ApplicationCycleId = applicationCycle.Id,
                 ScholarshipId = applicationCycle.ScholarshipId,
-                AcademicYear = applicationCycle.AcademicYear
+                AcademicYear = applicationCycle.AcademicYear,
+                Status = applicationCycle.Status
             }));
         }
 
@@ -48,7 +49,8 @@ public class ApplicationCyclesController : BaseController
         {
             ApplicationCycleId = applicationCycle.Id,
             ScholarshipId = applicationCycle.ScholarshipId,
-            AcademicYear = applicationCycle.AcademicYear
+            AcademicYear = applicationCycle.AcademicYear,
+            Status = applicationCycle.Status
         });
     }
 
@@ -66,7 +68,8 @@ public class ApplicationCyclesController : BaseController
         {
             Id = Guid.NewGuid(),
             ScholarshipId = scholarshipId,
-            AcademicYear = applicationCycle.AcademicYear
+            AcademicYear = applicationCycle.AcademicYear,
+            Status = applicationCycle.Status
         };
 
         await applicationCycleService.AddApplicationCycleAsync(newApplicationCycle);
@@ -75,7 +78,8 @@ public class ApplicationCyclesController : BaseController
         {
             ApplicationCycleId = newApplicationCycle.Id,
             ScholarshipId = newApplicationCycle.ScholarshipId,
-            AcademicYear = newApplicationCycle.AcademicYear
+            AcademicYear = newApplicationCycle.AcademicYear,
+            Status = newApplicationCycle.Status
         });
     }
 
@@ -93,7 +97,8 @@ public class ApplicationCyclesController : BaseController
         {
             Id = id,
             ScholarshipId = scholarshipId,
-            AcademicYear = applicationCycle.AcademicYear
+            AcademicYear = applicationCycle.AcademicYear,
+            Status = applicationCycle.Status
         };
 
         await applicationCycleService.UpdateApplicationCycleAsync(updatedApplicationCycle);
@@ -102,7 +107,8 @@ public class ApplicationCyclesController : BaseController
         {
             ApplicationCycleId = updatedApplicationCycle.Id,
             ScholarshipId = updatedApplicationCycle.ScholarshipId,
-            AcademicYear = updatedApplicationCycle.AcademicYear
+            AcademicYear = updatedApplicationCycle.AcademicYear,
+            Status = updatedApplicationCycle.Status
         });
     }
 }

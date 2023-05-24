@@ -7,8 +7,8 @@
 <h3>Course Detail</h3>
 
 <div class="btn-group">
-    <NavLink href="courses" class="btn btn-primary" aria-current="page">Course List</NavLink>
-    <NavLink href="courses/new" class="btn btn-primary" aria-current="page">Add Course</NavLink>
+    <NavLink href="courses" class="btn btn-primary btn-sm" aria-current="page">Course List</NavLink>
+    <NavLink href="courses/new" class="btn btn-primary btn-sm" aria-current="page">Add Course</NavLink>
 </div>
 <br />
 <br />
@@ -38,7 +38,7 @@
                 <label>Country</label>
                 <input @bind="Course.InstitutionCountry" class="form-control" placeholder="Country">
             </div><br />
-            <button @onclick="Submit" class="btn btn-primary" type="submit">Submit</button>
+            <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Submit</button>
         </form>
     </div>
 }
