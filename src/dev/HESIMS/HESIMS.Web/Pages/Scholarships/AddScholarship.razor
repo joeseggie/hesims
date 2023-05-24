@@ -1,0 +1,36 @@
+@page "/scholarships/new"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>HESIMS - Add Scholarship Program</PageTitle>
+
+<h3>New Scholarship Program</h3>
+
+<NavLink href="/" class="btn btn-primary">Back to List</NavLink><br /><br />
+
+<div class="col-8">
+    <form>
+        <div class="form-group">
+            <label>Scholarship Program</label>
+            <input @bind="Scholarship.ScholarshipName" class="form-control" placeholder="Scholarship program">
+        </div><br />
+        <div class="form-group">
+            <label>Offering Country</label>
+            <input @bind="Scholarship.Country" class="form-control" placeholder="Offfering country">
+        </div><br />
+        <button @onclick="Submit" class="btn btn-primary" type="submit">Submit</button>
+    </form>
+</div>
+
+@code {
+    [Parameter] public ScholarshipViewModel Scholarship { get; set; } = new ScholarshipViewModel();
+
+    private async Task Submit()
+    {
+        var response = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}api/scholarships", Scholarship);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo($"/", true);
+        }
+    }
+}
