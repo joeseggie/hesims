@@ -1,0 +1,20 @@
+@page "/students/apply/{ApplicationCycleCourseId:guid}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>HESIMS - Apply for Course</PageTitle>
+
+<h3>Apply for Course</h3>
+
+@code {
+    [Parameter] public Guid ApplicationCycleCourseId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var applicationCycleCourse = await Http.GetFromJsonAsync<ApplicationCycleCourse>($"{NavigationManager.BaseUri}api/application-cycle-courses/{ApplicationCycleCourseId}");
+        if (applicationCycleCourse == null)
+        {
+            NavigationManager.NavigateTo("/students");
+        }
+    }
+}

@@ -19,16 +19,31 @@ public class ApplicationCycleCoursesController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetApplicationCycleCoursesAsync()
+    public async Task<IActionResult> GetApplicationCycleCoursesAsync([FromQuery] Guid? cycle = null)
     {
-        var applicationCycleCourses = await applicationCycleCourseService.GetApplicationCycleCoursesAsync();
+        var applicationCycleCourses = await applicationCycleCourseService.GetApplicationCycleCoursesAsync(applicationCycleId: cycle);
         if (applicationCycleCourses != null && applicationCycleCourses.Count() > 0)
         {
             return Ok(applicationCycleCourses.Select(applicationCycleCourse => new ApplicationCycleCourseViewModel
             {
                 ApplicationCycleCourseId = applicationCycleCourse.Id,
                 ApplicationCycleId = applicationCycleCourse.ApplicationCycleId,
-                CourseId = applicationCycleCourse.CourseId
+                CourseId = applicationCycleCourse.CourseId,
+                Course = new CourseViewModel
+                {
+                    CourseId = applicationCycleCourse?.Course?.Id,
+                    CourseName = applicationCycleCourse?.Course?.Name,
+                    Duration = applicationCycleCourse?.Course?.Duration,
+                    CourseLevel = applicationCycleCourse?.Course?.CourseLevel,
+                    Institution = applicationCycleCourse?.Course?.Institution,
+                    InstitutionCountry = applicationCycleCourse?.Course?.InstitutionCountry
+                },
+                ApplicationCycle = new ApplicationCycleViewModel{
+                    ApplicationCycleId = applicationCycleCourse?.ApplicationCycle?.Id,
+                    ScholarshipId = applicationCycleCourse?.ApplicationCycle?.ScholarshipId,
+                    AcademicYear = applicationCycleCourse?.ApplicationCycle?.AcademicYear,
+                    Status = applicationCycleCourse?.ApplicationCycle?.Status
+                }
             }));
         }
 
@@ -38,18 +53,7 @@ public class ApplicationCycleCoursesController : BaseController
     [HttpGet("{id}")]
     public async Task<IActionResult> GetApplicationCycleCourseByIdAsync(Guid id)
     {
-        var applicationCycleCourse = await applicationCycleCourseService.GetApplicationCycleCourseByIdAsync(id);
-        if (applicationCycleCourse == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(new ApplicationCycleCourseViewModel
-        {
-            ApplicationCycleCourseId = applicationCycleCourse.Id,
-            ApplicationCycleId = applicationCycleCourse.ApplicationCycleId,
-            CourseId = applicationCycleCourse.CourseId
-        });
+        return await QueryForApplicationCycleCourseAsync(id);
     }
 
     [HttpPost]
@@ -69,9 +73,9 @@ public class ApplicationCycleCoursesController : BaseController
             ApplicationCycleId = applicationCycleId,
             CourseId = courseId
         };
-        
+
         await applicationCycleCourseService.AddApplicationCycleCourseAsync(newApplicationCycleCourse);
-        
+
         return CreatedAtAction(nameof(GetApplicationCycleCourseByIdAsync), new { id = newApplicationCycleCourse.Id }, new ApplicationCycleCourseViewModel
         {
             ApplicationCycleCourseId = newApplicationCycleCourse.Id,
@@ -90,19 +94,60 @@ public class ApplicationCycleCoursesController : BaseController
         }
 
         var applicationCycleId = GetValueFromNullableGuid(applicationCycleCourse.ApplicationCycleId);
-        var courseId = GetValueFromNullableGuid(applicationCycleCourse.CourseId);                
+        var courseId = GetValueFromNullableGuid(applicationCycleCourse.CourseId);
         var updatedApplicationCycleCourse = await applicationCycleCourseService.UpdateApplicationCycleCourseAsync(new ApplicationCycleCourse
         {
             Id = id,
             ApplicationCycleId = applicationCycleId,
             CourseId = courseId
         });
-        
+
+        return Ok(await QueryForApplicationCycleCourseAsync(updatedApplicationCycleCourse.Id));
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteApplicationCycleCourseAsync(Guid id)
+    {
+        var applicationCycleCourse = await applicationCycleCourseService.GetApplicationCycleCourseByIdAsync(id);
+        if (applicationCycleCourse == null)
+        {
+            return NotFound();
+        }
+
+        await applicationCycleCourseService.DeleteApplicationCycleCourseAsync(applicationCycleCourse.Id);
+
+        return Ok();
+    }
+
+    private async Task<IActionResult> QueryForApplicationCycleCourseAsync(Guid applicationCycleCourseId)
+    {
+        var applicationCycleCourse = await applicationCycleCourseService.GetApplicationCycleCourseByIdAsync(applicationCycleCourseId);
+        if (applicationCycleCourse == null)
+        {
+            return NotFound();
+        }
+
         return Ok(new ApplicationCycleCourseViewModel
         {
-            ApplicationCycleCourseId = updatedApplicationCycleCourse.Id,
-            ApplicationCycleId = updatedApplicationCycleCourse.ApplicationCycleId,
-            CourseId = updatedApplicationCycleCourse.CourseId
+            ApplicationCycleCourseId = applicationCycleCourse.Id,
+            ApplicationCycleId = applicationCycleCourse.ApplicationCycleId,
+            CourseId = applicationCycleCourse.CourseId,
+            Course = new CourseViewModel
+            {
+                CourseId = applicationCycleCourse?.Course?.Id,
+                CourseName = applicationCycleCourse?.Course?.Name,
+                Duration = applicationCycleCourse?.Course?.Duration,
+                CourseLevel = applicationCycleCourse?.Course?.CourseLevel,
+                Institution = applicationCycleCourse?.Course?.Institution,
+                InstitutionCountry = applicationCycleCourse?.Course?.InstitutionCountry
+            },
+            ApplicationCycle = new ApplicationCycleViewModel
+            {
+                ApplicationCycleId = applicationCycleCourse?.ApplicationCycle?.Id,
+                ScholarshipId = applicationCycleCourse?.ApplicationCycle?.ScholarshipId,
+                AcademicYear = applicationCycleCourse?.ApplicationCycle?.AcademicYear,
+                Status = applicationCycleCourse?.ApplicationCycle?.Status
+            }
         });
     }
 }

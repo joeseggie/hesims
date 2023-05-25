@@ -24,6 +24,16 @@ public record ApplicationCycleCourseViewModel
     public Guid? CourseId { get; set; }
 
     /// <summary>
+    /// Gets or sets the course.
+    /// </summary>
+    public CourseViewModel? Course { get; set; }
+
+    /// <summary>
+    /// Gets or sets the application cycle.
+    /// </summary>
+    public ApplicationCycleViewModel? ApplicationCycle { get; set; }
+
+    /// <summary>
     /// Validates the application cycle course view model.
     /// </summary>
     /// <param name="routeId">Application cycle course identifierin the route.</param>

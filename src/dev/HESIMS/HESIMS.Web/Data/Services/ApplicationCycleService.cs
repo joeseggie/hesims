@@ -52,7 +52,7 @@ public class ApplicationCycleService : IApplicationCycleService
     /// <inheritdoc/>
     public async Task<IEnumerable<ApplicationCycle>> GetApplicationCyclesAsync(Guid? scholarshipId = null, string? academicYear = null, string? status = null)
     {
-        var applicationCycles = db.ApplicationCycles.AsQueryable();
+        var applicationCycles = db.ApplicationCycles.Include(applicationCycle => applicationCycle.Scholarship).AsQueryable();
         if (scholarshipId != null)
         {
             applicationCycles = applicationCycles.Where(applicationCycle => applicationCycle.ScholarshipId == scholarshipId);
@@ -95,6 +95,8 @@ public class ApplicationCycleService : IApplicationCycleService
     /// <inheritdoc/>
     public async Task<ApplicationCycle?> GetApplicationCycleByIdAsync(Guid id)
     {
-        return await db.ApplicationCycles.FindAsync(id);
+        return await db.ApplicationCycles
+                       .Include(applicationCycle => applicationCycle.Scholarship)
+                       .FirstOrDefaultAsync(applicationCycle => applicationCycle.Id == id);
     }
 }

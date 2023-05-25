@@ -29,7 +29,13 @@ public class ApplicationCyclesController : BaseController
                 ApplicationCycleId = applicationCycle.Id,
                 ScholarshipId = applicationCycle.ScholarshipId,
                 AcademicYear = applicationCycle.AcademicYear,
-                Status = applicationCycle.Status
+                Status = applicationCycle.Status,
+                Scholarship = new ScholarshipViewModel
+                {
+                    ScholarshipId = applicationCycle?.Scholarship?.Id,
+                    ScholarshipName = applicationCycle?.Scholarship?.Name,
+                    Country = applicationCycle?.Scholarship?.Country
+                }
             }));
         }
 
@@ -50,7 +56,13 @@ public class ApplicationCyclesController : BaseController
             ApplicationCycleId = applicationCycle.Id,
             ScholarshipId = applicationCycle.ScholarshipId,
             AcademicYear = applicationCycle.AcademicYear,
-            Status = applicationCycle.Status
+            Status = applicationCycle.Status,
+            Scholarship = new ScholarshipViewModel
+            {
+                ScholarshipId = applicationCycle?.Scholarship?.Id,
+                ScholarshipName = applicationCycle?.Scholarship?.Name,
+                Country = applicationCycle?.Scholarship?.Country
+            }
         });
     }
 

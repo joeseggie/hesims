@@ -25,6 +25,8 @@ public record ApplicationCycleViewModel
     /// </summary>
     public string? Status { get; set; }
 
+    public ScholarshipViewModel? Scholarship { get; set; }
+
     /// <summary>
     /// Validates the application cycle view model.
     /// </summary>

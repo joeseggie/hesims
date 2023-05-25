@@ -13,10 +13,12 @@
 <div class="col-8">
     <form>
         <div class="form-group">
-            <label>Academic Year</label>
-            <input @bind="applicationCycle.AcademicYear" class="form-control" placeholder="Academic Year">
+            <div class="input-group">
+                <div class="input-group-text">Academic Year</div>
+                <input @bind="applicationCycle.AcademicYear" class="form-control" placeholder="Academic Year">
+                <button @onclick="CreateApplicationCycle" class="btn btn-danger btn-sm" type="submit">Save Changes</button>
+            </div>
         </div><br />
-        <button @onclick="CreateApplicationCycle" class="btn btn-danger btn-sm" type="submit">Save Changes</button>
     </form>
 </div>
 
