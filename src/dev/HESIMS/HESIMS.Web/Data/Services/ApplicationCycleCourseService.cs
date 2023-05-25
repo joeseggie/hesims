@@ -8,8 +8,9 @@ public interface IApplicationCycleCourseService
     /// <summary>
     /// Get application cycle courses.
     /// </summary>
+    /// <param name="applicationCycleId">Application cycle ID.</param>
     /// <returns>List of application cycle courses.</returns>
-    Task<IEnumerable<ApplicationCycleCourse>> GetApplicationCycleCoursesAsync();
+    Task<IEnumerable<ApplicationCycleCourse>> GetApplicationCycleCoursesAsync(Guid? applicationCycleId = null);
 
     /// <summary>
     /// Add new application cycle course.
@@ -29,7 +30,12 @@ public interface IApplicationCycleCourseService
     /// </summary>
     /// <param name="id">Application cycle course ID.</param>
     /// <returns>Application cycle course if ID exist, otherwise null</returns>
-    Task<ApplicationCycleCourse?> GetApplicationCycleCourseByIdAsync(Guid id);    
+    Task<ApplicationCycleCourse?> GetApplicationCycleCourseByIdAsync(Guid id);
+
+    /// <summary>
+    /// Delete application cycle course by Id.
+    /// </summary>
+    Task DeleteApplicationCycleCourseAsync(Guid id);    
 }
 
 /// <summary>
@@ -49,15 +55,24 @@ public class ApplicationCycleCourseService : IApplicationCycleCourseService
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<ApplicationCycleCourse>> GetApplicationCycleCoursesAsync()
+    public async Task<IEnumerable<ApplicationCycleCourse>> GetApplicationCycleCoursesAsync(Guid? applicationCycleId = null)
     {
-        return await db.ApplicationCycleCourses.ToListAsync();
+        var applicationCycleCourses = db.ApplicationCycleCourses
+                                        .Include(applicationCycleCourse => applicationCycleCourse.Course)
+                                        .Include(applicationCycleCourse => applicationCycleCourse.ApplicationCycle).AsQueryable();
+        if (applicationCycleId != null)
+        {
+            applicationCycleCourses = applicationCycleCourses.Where(applicationCycleCourse => applicationCycleCourse.ApplicationCycleId == applicationCycleId);
+        }
+
+        return await applicationCycleCourses.ToListAsync();
     }
     
     /// <inheritdoc/>
     public async Task AddApplicationCycleCourseAsync(ApplicationCycleCourse applicationCycleCourse)
     {
         await db.ApplicationCycleCourses.AddAsync(applicationCycleCourse);
+        await db.SaveChangesAsync();
     }
 
     /// <inheritdoc/>
@@ -77,6 +92,15 @@ public class ApplicationCycleCourseService : IApplicationCycleCourseService
     /// <inheritdoc/>
     public async Task<ApplicationCycleCourse?> GetApplicationCycleCourseByIdAsync(Guid id)
     {
-        return await db.ApplicationCycleCourses.FindAsync(id);
+        return await db.ApplicationCycleCourses
+                       .Include(applicationCycleCourse => applicationCycleCourse.Course)
+                       .Include(applicationCycleCourse => applicationCycleCourse.ApplicationCycle)
+                       .FirstOrDefaultAsync(applicationCycleCourse => applicationCycleCourse.Id == id);
+    }
+
+    /// <inheritdoc/>
+    public async Task DeleteApplicationCycleCourseAsync(Guid id)
+    {
+        await db.Database.ExecuteSqlRawAsync($"DELETE FROM ApplicationCycleCourses WHERE Id = '{id}'");
     }
 }

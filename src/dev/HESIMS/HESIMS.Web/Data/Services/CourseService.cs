@@ -8,8 +8,9 @@ public interface ICourseService
     /// <summary>
     /// Get courses.
     /// </summary>
+    /// <param name="country">Country where the course is offered.</param>
     /// <returns>List of courses.</returns>
-    Task<IEnumerable<Course>> GetCoursesAsync();
+    Task<IEnumerable<Course>> GetCoursesAsync(string? country = null);
 
     /// <summary>
     /// Add new course.
@@ -48,9 +49,16 @@ public class CourseService : ICourseService
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<Course>> GetCoursesAsync()
+    public async Task<IEnumerable<Course>> GetCoursesAsync(string? country = null)
     {
-        return await db.Courses.ToListAsync();
+        var courses = db.Courses.AsQueryable();
+        if (country != null)
+        {
+            courses = courses.Where(course => course.InstitutionCountry != null &&
+                                              course.InstitutionCountry.ToLower() == country.ToLower());
+        }
+
+        return await courses.ToListAsync();
     }
 
     /// <inheritdoc/>

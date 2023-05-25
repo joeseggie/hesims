@@ -1,0 +1,84 @@
+@page "/application-cycle-courses/new"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Add Application Cycle Course</h3>
+
+@if (scholarship != null && applicationCycle != null && courses != null)
+{
+    <div class="mb-3 btn-group">
+        <NavLink href="@($"application-cycles/{applicationCycle.ApplicationCycleId}?scholarship={Scholarship}")"
+            class="btn btn-primary btn-sm">Application Cycle Details</NavLink>
+    </div>
+
+    <div class="col-8">
+        <form>
+            <div class="form-group">
+                <div class="row">
+                    <label class="col-3 col-form-label">Scholarship:</label>
+                    <div class="col-9">
+                        <input type="text" readonly class="form-control-plaintext" value="@scholarship.ScholarshipName">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-3 col-form-label">Country:</label>
+                    <div class="col-9">
+                        <input type="text" readonly class="form-control-plaintext" value="@scholarship.Country">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-3 col-form-label">Application Cycle:</label>
+                    <div class="col-9">
+                        <input type="text" readonly class="form-control-plaintext" value="@applicationCycle.AcademicYear">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-3 col-form-label">Course Name:</label>
+                    <div class="col-9">
+                        <select @bind="applicationCycleCourse.CourseId" class="form-select">
+                            <option value="">Select Course</option>
+                            @foreach (var course in courses)
+                            {
+                                <option value="@course.CourseId">@course.CourseName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div><br />
+            <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Save</button>
+        </form>
+    </div>
+}
+
+@code {
+    private string endpoint = "api/application-cycle-courses";
+    private string coursesApiEndpoint = "api/courses";
+    private string scholarshipsApiEndpoint = "api/scholarships";
+    private ApplicationCycleCourseViewModel applicationCycleCourse = new();
+    private List<CourseViewModel>? courses = new();
+    private ScholarshipViewModel? scholarship = new();
+    private ApplicationCycleViewModel? applicationCycle = new();
+
+    [Parameter][SupplyParameterFromQuery] public Guid Cycle { get; set; } = Guid.Empty;
+    [Parameter][SupplyParameterFromQuery] public Guid Scholarship { get; set; } = Guid.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        applicationCycle = await Http.GetFromJsonAsync<ApplicationCycleViewModel>($"{NavigationManager.BaseUri}api/application-cycles/{Cycle}");
+        scholarship = await Http.GetFromJsonAsync<ScholarshipViewModel>($"{NavigationManager.BaseUri}{scholarshipsApiEndpoint}/{Scholarship}");
+        if (scholarship is not null)
+        {
+            courses = await Http.GetFromJsonAsync<List<CourseViewModel>>($"{NavigationManager.BaseUri}{coursesApiEndpoint}?country={scholarship.Country}");
+        }
+    }
+
+    private async Task Submit()
+    {
+        applicationCycleCourse.ApplicationCycleId = Cycle;
+        var response = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}{endpoint}", applicationCycleCourse);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}application-cycles/{Cycle}?scholarship={Scholarship}", true);
+        }
+    }
+}

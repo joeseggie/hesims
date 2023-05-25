@@ -16,17 +16,17 @@
     <div class="card bg-light">
         <div class="card-body">
             <form>
-            <input type="hidden" @bind="Scholarship.ScholarshipId" />
-            <div class="form-group">
-                <label>Scholarship Program</label>
-                <input @bind="Scholarship.ScholarshipName" class="form-control" placeholder="Scholarship program">
-            </div><br />
-            <div class="form-group">
-                <label>Offering Country</label>
-                <input @bind="Scholarship.Country" class="form-control" placeholder="Offfering country">
-            </div><br />
-            <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Save Changes</button>
-        </form>
+                <input type="hidden" @bind="Scholarship.ScholarshipId" />
+                <div class="form-group">
+                    <label>Scholarship Program</label>
+                    <input @bind="Scholarship.ScholarshipName" class="form-control" placeholder="Scholarship program">
+                </div><br />
+                <div class="form-group">
+                    <label>Offering Country</label>
+                    <input @bind="Scholarship.Country" class="form-control" placeholder="Offfering country">
+                </div><br />
+                <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Save Changes</button>
+            </form>
         </div>
     </div>
 }

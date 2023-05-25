@@ -18,9 +18,9 @@ public class CoursesController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetCoursesAsync()
+    public async Task<IActionResult> GetCoursesAsync([FromQuery] string? country = null)
     {
-        var courses = await courseService.GetCoursesAsync();
+        var courses = await courseService.GetCoursesAsync(country);
         if (courses != null && courses.Count() > 0)
         {
             return Ok(courses.Select(course => new CourseViewModel
@@ -73,7 +73,7 @@ public class CoursesController : BaseController
             Institution = course.Institution,
             InstitutionCountry = course.InstitutionCountry,
             CourseLevel = course.CourseLevel,
-            Duration = course.Duration
+            Duration = course.Duration ?? 0
         };
 
         try
@@ -119,7 +119,7 @@ public class CoursesController : BaseController
             Institution = course.Institution,
             InstitutionCountry = course.InstitutionCountry,
             CourseLevel = course.CourseLevel,
-            Duration = course.Duration
+            Duration = course.Duration ?? 0
         });
 
         return Ok(new CourseViewModel

@@ -18,7 +18,7 @@ public record CourseViewModel
     /// <summary>
     /// Course duration in years.
     /// </summary>
-    public int Duration { get; set; }
+    public int? Duration { get; set; }
 
     /// <summary>
     /// Course level.
