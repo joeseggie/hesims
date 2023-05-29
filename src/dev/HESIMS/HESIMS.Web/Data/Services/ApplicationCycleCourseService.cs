@@ -59,7 +59,9 @@ public class ApplicationCycleCourseService : IApplicationCycleCourseService
     {
         var applicationCycleCourses = db.ApplicationCycleCourses
                                         .Include(applicationCycleCourse => applicationCycleCourse.Course)
-                                        .Include(applicationCycleCourse => applicationCycleCourse.ApplicationCycle).AsQueryable();
+                                        .Include(applicationCycleCourse => applicationCycleCourse.ApplicationCycle)
+                                        .Include(applicationCycleCourse => applicationCycleCourse.ApplicationCycle.Scholarship)
+                                        .AsQueryable();
         if (applicationCycleId != null)
         {
             applicationCycleCourses = applicationCycleCourses.Where(applicationCycleCourse => applicationCycleCourse.ApplicationCycleId == applicationCycleId);
@@ -95,6 +97,7 @@ public class ApplicationCycleCourseService : IApplicationCycleCourseService
         return await db.ApplicationCycleCourses
                        .Include(applicationCycleCourse => applicationCycleCourse.Course)
                        .Include(applicationCycleCourse => applicationCycleCourse.ApplicationCycle)
+                       .Include(applicationCycleCourse => applicationCycleCourse.ApplicationCycle.Scholarship)
                        .FirstOrDefaultAsync(applicationCycleCourse => applicationCycleCourse.Id == id);
     }
 

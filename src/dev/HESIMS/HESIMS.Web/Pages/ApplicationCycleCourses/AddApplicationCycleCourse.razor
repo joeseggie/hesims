@@ -4,7 +4,7 @@
 
 <h3>Add Application Cycle Course</h3>
 
-@if (scholarship != null && applicationCycle != null && courses != null)
+@if (scholarship != null && applicationCycle != null && courses != null && applicationCycleCourse != null)
 {
     <div class="mb-3 btn-group">
         <NavLink href="@($"application-cycles/{applicationCycle.ApplicationCycleId}?scholarship={Scholarship}")"
@@ -54,18 +54,18 @@
     private string endpoint = "api/application-cycle-courses";
     private string coursesApiEndpoint = "api/courses";
     private string scholarshipsApiEndpoint = "api/scholarships";
-    private ApplicationCycleCourseViewModel applicationCycleCourse = new();
-    private List<CourseViewModel>? courses = new();
-    private ScholarshipViewModel? scholarship = new();
-    private ApplicationCycleViewModel? applicationCycle = new();
+    private ApplicationCycleCourseViewModel? applicationCycleCourse = new ApplicationCycleCourseViewModel();
+    private List<CourseViewModel>? courses = new List<CourseViewModel>();
+    private ScholarshipViewModel? scholarship = new ScholarshipViewModel();
+    private ApplicationCycleViewModel? applicationCycle = new ApplicationCycleViewModel();
 
-    [Parameter][SupplyParameterFromQuery] public Guid Cycle { get; set; } = Guid.Empty;
-    [Parameter][SupplyParameterFromQuery] public Guid Scholarship { get; set; } = Guid.Empty;
+    [Parameter][SupplyParameterFromQuery] public Guid? Cycle { get; set; }
+    [Parameter][SupplyParameterFromQuery] public Guid? Scholarship { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        applicationCycle = await Http.GetFromJsonAsync<ApplicationCycleViewModel>($"{NavigationManager.BaseUri}api/application-cycles/{Cycle}");
-        scholarship = await Http.GetFromJsonAsync<ScholarshipViewModel>($"{NavigationManager.BaseUri}{scholarshipsApiEndpoint}/{Scholarship}");
+        applicationCycle = applicationCycle ?? await Http.GetFromJsonAsync<ApplicationCycleViewModel>($"{NavigationManager.BaseUri}api/application-cycles/{Cycle}");
+        scholarship = scholarship ?? await Http.GetFromJsonAsync<ScholarshipViewModel>($"{NavigationManager.BaseUri}{scholarshipsApiEndpoint}/{Scholarship}");
         if (scholarship is not null)
         {
             courses = await Http.GetFromJsonAsync<List<CourseViewModel>>($"{NavigationManager.BaseUri}{coursesApiEndpoint}?country={scholarship.Country}");
@@ -74,7 +74,6 @@
 
     private async Task Submit()
     {
-        applicationCycleCourse.ApplicationCycleId = Cycle;
         var response = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}{endpoint}", applicationCycleCourse);
         if (response.IsSuccessStatusCode)
         {

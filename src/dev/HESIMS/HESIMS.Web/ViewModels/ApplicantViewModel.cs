@@ -10,6 +10,10 @@ public record ApplicantViewModel
 
     public string? OtherNames { get; set; }
 
+    public Guid? ApplicationCycleCourseId { get; set; }
+
+    public ApplicationCycleCourseViewModel? ApplicationCycleCourse { get; set; }
+
     /// <summary>
     /// Validates the applicant view model.
     /// </summary>

@@ -5,14 +5,17 @@ namespace HESIMS.Web.Controllers;
 public class ApplicantsController : BaseController
 {
     private readonly IApplicantService applicantService;
+    private readonly ICourseApplicationService courseApplicationService;
 
     /// <summary>
     /// Initializes a new instance of <see cref="ApplicantsController"/> class.
     /// </summary>
-    /// <param name="applicantService">Applicant service.</param> 
-    public ApplicantsController(IApplicantService applicantService)
+    /// <param name="applicantService">Applicant service.</param>
+    /// <param name="courseApplicationService">Course application service.</param>
+    public ApplicantsController(IApplicantService applicantService, ICourseApplicationService courseApplicationService)
     {
         this.applicantService = applicantService;
+        this.courseApplicationService = courseApplicationService;
     }
 
     [HttpGet]
@@ -69,6 +72,16 @@ public class ApplicantsController : BaseController
         };
 
         await applicantService.AddApplicantAsync(newApplicant);
+        if (applicant.ApplicationCycleCourseId != null && applicant.ApplicationCycleCourseId != Guid.Empty)
+        {
+            await courseApplicationService.AddCourseApplicationAsync(new CourseApplication
+            {
+                Id = Guid.NewGuid(),
+                ApplicantId = newApplicant.Id,
+                ApplicationCycleCourseId = applicant.ApplicationCycleCourseId.Value,
+                ApplicationDateTime = DateTimeOffset.Now
+            });
+        }
 
         return CreatedAtAction(nameof(GetApplicantByIdAsync), new { id = newApplicant.Id }, new ApplicantViewModel
         {
