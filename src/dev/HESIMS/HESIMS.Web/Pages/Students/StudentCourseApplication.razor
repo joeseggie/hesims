@@ -6,15 +6,45 @@
 
 <h3>Apply for Course</h3>
 
-@code {
-    [Parameter] public Guid ApplicationCycleCourseId { get; set; }
+<div class="col-8">
+    <form>
+        <div class="form-group">
+            <label>First name</label>
+            <input @bind="ScholarshipApplication.Firstname" class="form-control" placeholder="First name">
+        </div><br />
+        <div class="form-group">
+            <label>Last name</label>
+            <input @bind="ScholarshipApplication.Lastname" class="form-control" placeholder="Last name">
+        </div><br />
+        <div class="form-group">
+            <label>Other names</label>
+            <input @bind="ScholarshipApplication.OtherNames" class="form-control" placeholder="Other names">
+        </div><br />
+        <button @onclick="Submit" class="btn btn-danger btn-sm">Submit</button>
+    </form>
+</div>
 
-    protected override async Task OnInitializedAsync()
+@code {
+    [Parameter] public Guid? ApplicationCycleCourseId { get; set; }
+
+    [Parameter] public ScholarshipApplicationViewModel ScholarshipApplication { get; set; } = new();
+
+    private async Task Submit()
     {
-        var applicationCycleCourse = await Http.GetFromJsonAsync<ApplicationCycleCourse>($"{NavigationManager.BaseUri}api/application-cycle-courses/{ApplicationCycleCourseId}");
-        if (applicationCycleCourse == null)
+
+        var applicant = new ApplicantViewModel
         {
-            NavigationManager.NavigateTo("/students");
+            Firstname = ScholarshipApplication.Firstname,
+            Lastname = ScholarshipApplication.Lastname,
+            OtherNames = ScholarshipApplication.OtherNames,
+            ApplicationCycleCourseId = ApplicationCycleCourseId
+        };
+
+        var response = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}api/applicants", applicant);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}/students", true);
         }
     }
 }
+

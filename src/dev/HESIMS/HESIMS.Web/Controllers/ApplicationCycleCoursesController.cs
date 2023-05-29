@@ -38,11 +38,18 @@ public class ApplicationCycleCoursesController : BaseController
                     Institution = applicationCycleCourse?.Course?.Institution,
                     InstitutionCountry = applicationCycleCourse?.Course?.InstitutionCountry
                 },
-                ApplicationCycle = new ApplicationCycleViewModel{
+                ApplicationCycle = new ApplicationCycleViewModel
+                {
                     ApplicationCycleId = applicationCycleCourse?.ApplicationCycle?.Id,
                     ScholarshipId = applicationCycleCourse?.ApplicationCycle?.ScholarshipId,
                     AcademicYear = applicationCycleCourse?.ApplicationCycle?.AcademicYear,
-                    Status = applicationCycleCourse?.ApplicationCycle?.Status
+                    Status = applicationCycleCourse?.ApplicationCycle?.Status,
+                    Scholarship = new ScholarshipViewModel
+                    {
+                        ScholarshipId = applicationCycleCourse?.ApplicationCycle?.Scholarship?.Id,
+                        ScholarshipName = applicationCycleCourse?.ApplicationCycle?.Scholarship?.Name,
+                        Country = applicationCycleCourse?.ApplicationCycle?.Scholarship?.Country
+                    }
                 }
             }));
         }
@@ -146,7 +153,13 @@ public class ApplicationCycleCoursesController : BaseController
                 ApplicationCycleId = applicationCycleCourse?.ApplicationCycle?.Id,
                 ScholarshipId = applicationCycleCourse?.ApplicationCycle?.ScholarshipId,
                 AcademicYear = applicationCycleCourse?.ApplicationCycle?.AcademicYear,
-                Status = applicationCycleCourse?.ApplicationCycle?.Status
+                Status = applicationCycleCourse?.ApplicationCycle?.Status,
+                Scholarship = new ScholarshipViewModel
+                {
+                    ScholarshipId = applicationCycleCourse?.ApplicationCycle?.Scholarship?.Id,
+                    ScholarshipName = applicationCycleCourse?.ApplicationCycle?.Scholarship?.Name,
+                    Country = applicationCycleCourse?.ApplicationCycle?.Scholarship?.Country
+                }
             }
         });
     }

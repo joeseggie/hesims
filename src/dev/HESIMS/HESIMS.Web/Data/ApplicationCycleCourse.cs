@@ -23,12 +23,12 @@ public class ApplicationCycleCourse
     /// <summary>
     /// Application cycle.
     /// </summary>
-    public ApplicationCycle? ApplicationCycle { get; set; }
+    public ApplicationCycle ApplicationCycle { get; set; } = new ();
 
     /// <summary>
     /// Course.
     /// </summary>
-    public Course? Course { get; set; }
+    public Course Course { get; set; } = new ();
 
     public IEnumerable<CourseApplication>? CourseApplications { get; set; }
 }

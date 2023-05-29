@@ -5,10 +5,9 @@
 <PageTitle>HESIMS - Registered Students</PageTitle>
 
 <h3>Registered Students</h3>
+<hr />
 
-<NavLink href="students/new" class="btn btn-primary">Add New Student</NavLink><br /><br />
-
-<table class="table table-bordered table-sm">
+<table class="table table-condensed table-striped table-responsive table-sm">
     <thead>
         <tr>
             <th class="col-4">First name</th>
@@ -22,13 +21,13 @@
             @foreach (var applicant in applicants)
             {
                 <tr>
-                    <td class="col-4">
+                    <td class="col-4 fs-6">
                         <NavLink href="@($"students/{applicant.ApplicantId}")">@applicant.Firstname</NavLink>                        
                     </td>
-                    <td class="col-4">
+                    <td class="col-4 fs-6">
                         <NavLink href="@($"students/{applicant.ApplicantId}")">@applicant.Lastname</NavLink>                        
                     </td>
-                    <td class="col-4">@applicant.OtherNames</td>
+                    <td class="col-4 fs-6">@applicant.OtherNames</td>
                 </tr>
             }
         }
