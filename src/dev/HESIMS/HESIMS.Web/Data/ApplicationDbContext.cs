@@ -11,14 +11,6 @@ public class ApplicationDbContext : IdentityDbContext
 
     public DbSet<Course> Courses { get; set; } = default!;
 
-    public DbSet<Applicant> Applicants { get; set; } = default!;
-
-    public DbSet<ApplicationCycle> ApplicationCycles { get; set; } = default!;
-
-    public DbSet<ApplicationCycleCourse> ApplicationCycleCourses { get; set; } = default!;
-
-    public DbSet<CourseApplication> CourseApplications { get; set; } = default!;
-
     public DbSet<Student> Students { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -27,9 +19,5 @@ public class ApplicationDbContext : IdentityDbContext
 
         new ScholarshipConfiguration().Configure(builder.Entity<Scholarship>());
         new CourseConfiguration().Configure(builder.Entity<Course>());
-        new ApplicantConfiguration().Configure(builder.Entity<Applicant>());
-        new ApplicationCycleConfiguration().Configure(builder.Entity<ApplicationCycle>());
-        new ApplicationCycleCourseConfiguration().Configure(builder.Entity<ApplicationCycleCourse>());
-        new CourseApplicationConfiguration().Configure(builder.Entity<CourseApplication>());
     }
 }

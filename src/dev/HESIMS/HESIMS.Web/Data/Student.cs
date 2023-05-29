@@ -24,9 +24,4 @@ public class Student
     /// Student's address.
     /// </summary>
     public string? Address { get; set; }
-
-    /// <summary>
-    /// Student's application profile.
-    /// </summary>
-    public Applicant? Applicant { get; set; }
 }

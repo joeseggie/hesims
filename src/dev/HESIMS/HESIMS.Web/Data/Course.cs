@@ -34,9 +34,4 @@ public class Course
     /// Country of the institution.
     /// </summary>
     public string? InstitutionCountry { get; set; }
-
-    /// <summary>
-    /// Application cycles where the course is offered.
-    /// </summary>
-    public IEnumerable<ApplicationCycleCourse>? ApplicationCycleCourses { get; set; }
 }
