@@ -25,9 +25,9 @@ public record ScholarshipViewModel
     /// </summary>
     /// <param name="routeScholarshipId">Scholarship Id with the request route.</param>
     /// <param name="validateId">Validate Id.</param>
-    public ValidationResult Validate(Guid? routeScholarshipId = null, bool validateId = false)
+    public HESIMS.Web.Common.ValidationResult Validate(Guid? routeScholarshipId = null, bool validateId = false)
     {
-        var validationResult = new ValidationResult
+        var validationResult = new HESIMS.Web.Common.ValidationResult
         {
             IsValid = true
         };

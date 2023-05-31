@@ -39,9 +39,9 @@ public record CourseViewModel
     /// Validates the course view model.
     /// </summary>
     /// <param name="courseId">Course Id.</param>
-    public ValidationResult Validate(Guid? routeCourseId = null, bool validateId = false)
+    public HESIMS.Web.Common.ValidationResult Validate(Guid? routeCourseId = null, bool validateId = false)
     {
-        var validationResult = new ValidationResult
+        var validationResult = new HESIMS.Web.Common.ValidationResult
         {
             IsValid = true
         };
