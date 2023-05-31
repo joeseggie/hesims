@@ -1,0 +1,52 @@
+@page "/countries"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>HESIMS - Scholarship Offering Countries</PageTitle>
+
+<h3>Scholarship Offering Countries</h3>
+<hr />
+
+<AddCountry />
+
+<table class="table table-responsive table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>Country</th>
+            <th>Code</th>
+            <th>Scholarships</th>
+            <th>Students</th>
+        </tr>
+    </thead>
+    @if (countries != null && countries.Count > 0)
+    {
+        <tbody>
+            @foreach (var country in countries)
+            {
+                <tr>
+                    <td>@country.CountryName</td>
+                    <td>@country.CountryCode</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            }
+        </tbody>
+    }
+    else
+    {
+        <tbody>
+            <tr>
+                <td colspan="4">No records found.</td>
+            </tr>
+        </tbody>
+    }
+</table>
+
+@code {
+    private List<CountryViewModel>? countries;
+
+    protected override async Task OnInitializedAsync()
+    {
+        countries = await Http.GetFromJsonAsync<List<CountryViewModel>>($"{NavigationManager.BaseUri}api/countries");
+    }
+}

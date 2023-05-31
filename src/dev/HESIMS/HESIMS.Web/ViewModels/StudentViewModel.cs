@@ -18,13 +18,8 @@ public record StudentViewModel
     /// </summary>
     /// <param name="studentId">Student Id.</param>
     /// <param name="validateId">Whether to validate the Id.</param>
-    public HESIMS.Web.Common.ValidationResult Validate(Guid? routeId = null, bool validateId = false)
+    public Result<bool> Validate(Guid? routeId = null, bool validateId = false)
     {
-        var validationResult = new HESIMS.Web.Common.ValidationResult
-        {
-            IsValid = true
-        };
-
-        return validationResult;
+        return Result<bool>.Success(true);
     }
 }

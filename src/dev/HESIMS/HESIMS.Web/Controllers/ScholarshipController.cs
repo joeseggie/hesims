@@ -56,7 +56,7 @@ public class ScholarshipController : BaseController
     public async Task<IActionResult> AddScholarshipAsync([FromBody] ScholarshipViewModel scholarship)
     {
         var validationResult = scholarship.Validate();
-        if (!validationResult.IsValid)
+        if (!validationResult.IsSuccess)
         {
             return BadRequest(validationResult.ErrorMessage);
         }
@@ -96,7 +96,7 @@ public class ScholarshipController : BaseController
     public async Task<IActionResult> UpdateScholarshipAsync(Guid id, [FromBody] ScholarshipViewModel scholarship)
     {
         var validationResult = scholarship.Validate(routeScholarshipId: id, validateId: true);
-        if (!validationResult.IsValid)
+        if (!validationResult.IsSuccess)
         {
             return BadRequest(validationResult.ErrorMessage);
         }

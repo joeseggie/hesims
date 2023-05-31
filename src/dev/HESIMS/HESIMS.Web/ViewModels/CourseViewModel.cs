@@ -39,32 +39,26 @@ public record CourseViewModel
     /// Validates the course view model.
     /// </summary>
     /// <param name="courseId">Course Id.</param>
-    public HESIMS.Web.Common.ValidationResult Validate(Guid? routeCourseId = null, bool validateId = false)
+    public Result<bool> Validate(Guid? routeCourseId = null, bool validateId = false)
     {
-        var validationResult = new HESIMS.Web.Common.ValidationResult
-        {
-            IsValid = true
-        };
+        var result = Result<bool>.Success(true);
 
         if (string.IsNullOrWhiteSpace(CourseName))
         {
-            validationResult.IsValid = false;
-            validationResult.ErrorMessage = "Course name is required.";
+            result = Result<bool>.Failure("Course name is required.");
         }
 
-        var isEmptyOrDefaultGuidCourseId = !CourseId.HasValue && CourseId == Guid.Empty;
+        var isEmptyOrDefaultGuidCourseId = !CourseId.HasValue || CourseId == Guid.Empty;
         if (validateId && isEmptyOrDefaultGuidCourseId)
         {
-            validationResult.IsValid = false;
-            validationResult.ErrorMessage = "Course ID is required.";
+            result = Result<bool>.Failure("Course ID is required.");
         }
 
         if (validateId && CourseId != routeCourseId)
         {
-            validationResult.IsValid = false;
-            validationResult.ErrorMessage = "Course ID mismatch.";
+            result = Result<bool>.Failure("Course ID mismatch.");
         }
         
-        return validationResult;
+        return result;
     }
 }

@@ -18,6 +18,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IScholarshipService, ScholarshipService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
 
 var app = builder.Build();
 

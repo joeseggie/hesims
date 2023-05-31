@@ -61,7 +61,7 @@ public class CoursesController : BaseController
     public async Task<IActionResult> AddCourseAsync([FromBody] CourseViewModel course)
     {
         var validationResult = course.Validate();
-        if (!validationResult.IsValid)
+        if (!validationResult.IsSuccess)
         {
             return BadRequest(validationResult.ErrorMessage);
         }
@@ -107,7 +107,7 @@ public class CoursesController : BaseController
     public async Task<IActionResult> UpdateCourseAsync(Guid id, [FromBody] CourseViewModel course)
     {
         var validationResult = course.Validate(routeCourseId: id, validateId: true);
-        if (!validationResult.IsValid)
+        if (!validationResult.IsSuccess)
         {
             return BadRequest(validationResult.ErrorMessage);
         }
