@@ -7,7 +7,7 @@
 <h3>Scholarship Offering Countries</h3>
 <hr />
 
-<AddCountry />
+<AddCountry OnCountrySubmit="AddCountryAsync" />
 
 <table class="table table-responsive table-condensed table-striped">
     <thead>
@@ -24,7 +24,9 @@
             @foreach (var country in countries)
             {
                 <tr>
-                    <td>@country.CountryName</td>
+                    <td>
+                        <NavLink href="@($"countries/{country.CountryId}")">@country.CountryName</NavLink>
+                    </td>
                     <td>@country.CountryCode</td>
                     <td></td>
                     <td></td>
@@ -48,5 +50,14 @@
     protected override async Task OnInitializedAsync()
     {
         countries = await Http.GetFromJsonAsync<List<CountryViewModel>>($"{NavigationManager.BaseUri}api/countries");
+    }
+
+    private async Task AddCountryAsync(CountryViewModel country)
+    {
+        var response = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}api/countries", country);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}countries");
+        }
     }
 }

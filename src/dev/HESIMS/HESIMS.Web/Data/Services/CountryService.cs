@@ -62,7 +62,9 @@ public class CountryService : ICountryService
     /// <inheritdoc/>
     public async Task<Result<IEnumerable<Country>>> GetCountriesAsync()
     {
-        var countries = await dbContext.Countries.ToListAsync();
+        var countries = await dbContext.Countries
+                                       .OrderBy(country => country.Name)
+                                       .ToListAsync();
 
         return Result<IEnumerable<Country>>.Success(countries);
     }
@@ -78,10 +80,10 @@ public class CountryService : ICountryService
     /// <inheritdoc/>
     public async Task<Result<Country?>> UpdateCountryAsync(Country country)
     {
-        var existingCountry = await dbContext.Courses.FindAsync(country.Id);
+        var existingCountry = await dbContext.Countries.FindAsync(country.Id);
         if (existingCountry == null)
         {
-            return Result<Country?>.Failure($"Course with ID {country.Id} does not exist.");
+            return Result<Country?>.Failure($"Country with ID {country.Id} does not exist.");
         }
 
         dbContext.Entry(existingCountry).CurrentValues.SetValues(country);
