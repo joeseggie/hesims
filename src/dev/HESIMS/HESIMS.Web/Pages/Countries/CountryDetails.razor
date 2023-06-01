@@ -1,0 +1,58 @@
+@page "/countries/{CountryId:guid}"
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>HESIMS - Country Details</PageTitle>
+
+@if (country != null)
+{
+    <h3>@country.CountryName Scholarships</h3>
+    <hr class="mb3" />
+
+    <div class="btn-group mb-3">
+        <NavLink href="countries" class="btn btn-primary btn-sm" aria-current="page">Countries List</NavLink>
+    </div>
+
+    <div class="card bg-light mb-4">
+        <div class="card-body">
+            <form>
+                <input type="hidden" @bind="country.CountryId" />
+                <div class="form-group mb-3">
+                    <label>Country Name</label>
+                    <input type="text" class="form-control" @bind="country.CountryName" placeholder="Enter country name">
+                </div>
+                <div class="form-group mb-3">
+                    <label>Country Code</label>
+                    <input type="text" class="form-control" @bind="country.CountryCode" placeholder="Enter country code">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-danger btn-sm" @onclick="Submit" type="submit">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@code {
+    private CountryViewModel? country = new();
+
+    [Parameter] public Guid CountryId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        country = await Http.GetFromJsonAsync<CountryViewModel>($"{NavigationManager.BaseUri}api/countries/{CountryId}");
+    }
+
+    private async Task Submit()
+    {
+        if (country != null)
+        {
+            var response = await Http.PutAsJsonAsync<CountryViewModel>($"{NavigationManager.BaseUri}api/countries/{CountryId}", country);
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo($"{NavigationManager.BaseUri}countries/{CountryId}", true);
+            }
+        }
+    }
+}

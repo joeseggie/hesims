@@ -1,0 +1,34 @@
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+@if (country != null)
+{
+    <div class="card bg-light mb-4">
+        <div class="card-body">
+            <form>
+                <div class="form-group mb-3">
+                    <label>Country Name</label>
+                    <input type="text" class="form-control" @bind="country.CountryName" placeholder="Enter country name">
+                </div>
+                <div class="form-group mb-3">
+                    <label>Country Code</label>
+                    <input type="text" class="form-control" @bind="country.CountryCode" placeholder="Enter country code">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-danger btn-sm" @onclick="Submit" type="submit">Add Country</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@code {
+    private CountryViewModel? country = new ();
+
+    [Parameter] public EventCallback<CountryViewModel> OnCountrySubmit { get; set; }
+
+    private async Task Submit()
+    {
+        await OnCountrySubmit.InvokeAsync(country);
+    }
+}

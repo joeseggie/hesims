@@ -25,38 +25,31 @@ public record ScholarshipViewModel
     /// </summary>
     /// <param name="routeScholarshipId">Scholarship Id with the request route.</param>
     /// <param name="validateId">Validate Id.</param>
-    public ValidationResult Validate(Guid? routeScholarshipId = null, bool validateId = false)
+    public Result<bool> Validate(Guid? routeScholarshipId = null, bool validateId = false)
     {
-        var validationResult = new ValidationResult
-        {
-            IsValid = true
-        };
+        var result = Result<bool>.Success(true);
 
         if (string.IsNullOrWhiteSpace(ScholarshipName))
         {
-            validationResult.IsValid = false;
-            validationResult.ErrorMessage = "Scholarship name is required.";
+            result = Result<bool>.Failure("Scholarship name is required.");
         }
 
         if (string.IsNullOrWhiteSpace(Country))
         {
-            validationResult.IsValid = false;
-            validationResult.ErrorMessage = "Country is required.";
+            result = Result<bool>.Failure("Country is required.");
         }
 
-        var isEmptyOrDefaultGuidScholarshipId = !ScholarshipId.HasValue && ScholarshipId == Guid.Empty;
+        var isEmptyOrDefaultGuidScholarshipId = !ScholarshipId.HasValue || ScholarshipId == Guid.Empty;
         if (validateId && isEmptyOrDefaultGuidScholarshipId)
         {
-            validationResult.IsValid = false;
-            validationResult.ErrorMessage = "Scholarship ID is required.";
+            result = Result<bool>.Failure("Scholarship ID is required.");
         }
 
         if (validateId && ScholarshipId != routeScholarshipId)
         {
-            validationResult.IsValid = false;
-            validationResult.ErrorMessage = "Scholarship ID mismatch.";
+            result = Result<bool>.Failure("Scholarship ID mismatch.");
         }
-        
-        return validationResult;
+
+        return result;
     }
 }

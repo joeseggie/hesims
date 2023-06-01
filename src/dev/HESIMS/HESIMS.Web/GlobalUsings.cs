@@ -13,3 +13,4 @@ global using Microsoft.AspNetCore.Mvc;
 global using HESIMS.Web.ViewModels;
 global using HESIMS.Web.Common;
 global using Microsoft.Data.SqlClient;
+global using System.ComponentModel.DataAnnotations;

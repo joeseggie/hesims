@@ -19,6 +19,4 @@ public class Scholarship
     /// Scholarship name.
     /// </summary>
     public string? Name { get; set; }
-
-    public IEnumerable<ApplicationCycle>? ApplicationCycles { get; set; }
 }

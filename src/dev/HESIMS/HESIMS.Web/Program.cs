@@ -16,12 +16,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-builder.Services.AddScoped<IApplicantService, ApplicantService>();
-builder.Services.AddScoped<IApplicationCycleCourseService, ApplicationCycleCourseService>();
-builder.Services.AddScoped<IApplicationCycleService, ApplicationCycleService>();
-builder.Services.AddScoped<ICourseApplicationService, CourseApplicationService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IScholarshipService, ScholarshipService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
 
 var app = builder.Build();
 
