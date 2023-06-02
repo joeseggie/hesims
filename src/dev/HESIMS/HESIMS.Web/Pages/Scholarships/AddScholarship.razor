@@ -1,36 +1,45 @@
-@page "/scholarships/new"
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<PageTitle>HESIMS - Add Scholarship Program</PageTitle>
-
-<h3>New Scholarship Program</h3>
-
-<NavLink href="/" class="btn btn-primary btn-sm">Back to List</NavLink><br /><br />
-
-<div class="col-8">
-    <form>
-        <div class="form-group">
-            <label>Scholarship Program</label>
-            <input @bind="Scholarship.ScholarshipName" class="form-control" placeholder="Scholarship program">
-        </div><br />
-        <div class="form-group">
-            <label>Offering Country</label>
-            <input @bind="Scholarship.Country" class="form-control" placeholder="Offering country">
-        </div><br />
-        <button @onclick="Submit" class="btn btn-primary" type="submit">Submit</button>
-    </form>
+<div class="card bg-light mb-4">
+    <div class="card-body">
+        <form>
+            <div class="form-group mb-3">
+                <label>Scholarship Program</label>
+                <input @bind="Scholarship.ScholarshipName" class="form-control" placeholder="Scholarship program">
+            </div>
+            <div class="form-group mb-3">
+                <label>Offering Country</label>
+                <select @bind="Scholarship.CountryId" class="form-select">
+                    <option selected>Select a country</option>
+                    @if (Countries != null)
+                    {
+                        @foreach (var country in Countries)
+                        {
+                            <option value="@country.CountryId">@country.CountryName</option>
+                        }
+                    }
+                </select>
+            </div>
+            <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Add Scholarship</button>
+        </form>
+    </div>
 </div>
 
 @code {
     [Parameter] public ScholarshipViewModel Scholarship { get; set; } = new ScholarshipViewModel();
 
+    [Parameter] public EventCallback<ScholarshipViewModel> OnScholarshipSubmit { get; set; }
+
+    private List<CountryViewModel>? Countries { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Countries = await Http.GetFromJsonAsync<List<CountryViewModel>>($"{NavigationManager.BaseUri}api/countries");
+    }
+
     private async Task Submit()
     {
-        var response = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}api/scholarships", Scholarship);
-        if (response.IsSuccessStatusCode)
-        {
-            NavigationManager.NavigateTo($"/", true);
-        }
+        await OnScholarshipSubmit.InvokeAsync(Scholarship);
     }
 }

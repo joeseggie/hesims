@@ -19,4 +19,9 @@ public class Country
     /// Country's code.
     /// </summary>
     public string? Code { get; set; }
+
+    /// <summary>
+    /// Country's scholarships.
+    /// </summary>
+    public IEnumerable<Scholarship>? Scholarships { get; set; }
 }

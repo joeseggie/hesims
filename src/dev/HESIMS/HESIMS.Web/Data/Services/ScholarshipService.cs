@@ -9,34 +9,34 @@ public interface IScholarshipService
     /// Get scholarships.
     /// </summary>
     /// <returns>List of scholarships</returns>
-    Task<IEnumerable<Scholarship>> GetScholarshipsAsync();
+    Task<Result<IEnumerable<Scholarship>>> GetScholarshipsAsync();
 
     /// <summary>
     /// Add scholarship.
     /// </summary>
     /// <param name="scholarship">Scholarship to be added.</param>
-    Task AddScholarshipAsync(Scholarship scholarship);
+    Task<Result<Scholarship>> AddScholarshipAsync(Scholarship scholarship);
 
     /// <summary>
     /// Get scholarship given the ID.
     /// </summary>
     /// <param name="id">Scholarship ID.</param>
     /// <returns>Scholarship if ID exists; otherwise null.</returns>
-    Task<Scholarship?> GetScholarshipByIdAsync(Guid id);
+    Task<Result<Scholarship?>> GetScholarshipByIdAsync(Guid id);
 
     /// <summary>
     /// Update scholarship.
     /// </summary>
     /// <param name="scholarship">Scholarship update to be saved.</param>
     /// <returns>Updated scholarship.</returns>
-    Task<Scholarship> UpdateScholarshipAsync(Scholarship scholarship);
+    Task<Result<Scholarship>> UpdateScholarshipAsync(Scholarship scholarship);
 
     /// <summary>
     /// Get scholarships offered by a country.
     /// </summary>
-    /// <param name="country">Country name.</param>
+    /// <param name="countryId">Country Id.</param>
     /// <returns>List of scholarships.</returns>
-    Task<IEnumerable<Scholarship>> GetScholarshipsByCountryAsync(string country);
+    Task<Result<IEnumerable<Scholarship>>> GetScholarshipsByCountryAsync(Guid countryId);
 }
 
 /// <summary>
@@ -56,43 +56,58 @@ public class ScholarshipService : IScholarshipService
     }
 
     /// <inheritdoc />
-    public async Task AddScholarshipAsync(Scholarship scholarship)
+    public async Task<Result<Scholarship>> AddScholarshipAsync(Scholarship scholarship)
     {
-        await db.Scholarships.AddAsync(scholarship);
+        var scholarshipEntry = await db.Scholarships.AddAsync(scholarship);
         await db.SaveChangesAsync();
+
+        return Result<Scholarship>.Success(scholarshipEntry.Entity);
     }
 
     /// <inheritdoc />
-    public async Task<Scholarship?> GetScholarshipByIdAsync(Guid id)
+    public async Task<Result<Scholarship?>> GetScholarshipByIdAsync(Guid id)
     {
-        return await db.Scholarships.FindAsync(id);
+        var scholarship = await db.Scholarships
+                                   .Include(scholarship => scholarship.Country)
+                                   .FirstOrDefaultAsync(scholarship => scholarship.Id == id);
+
+        return Result<Scholarship?>.Success(scholarship);
     }
 
     /// <inheritdoc />
-    public async Task<IEnumerable<Scholarship>> GetScholarshipsAsync()
+    public async Task<Result<IEnumerable<Scholarship>>> GetScholarshipsAsync()
     {
-        return await db.Scholarships.ToListAsync();
+        var scholarships = await db.Scholarships
+                                   .Include(scholarship => scholarship.Country)
+                                   .OrderBy(scholarship => scholarship.Name)
+                                   .ToListAsync();
+        return Result<IEnumerable<Scholarship>>.Success(scholarships);
     }
 
     /// <inheritdoc />
-    public async Task<Scholarship> UpdateScholarshipAsync(Scholarship scholarship)
+    public async Task<Result<Scholarship>> UpdateScholarshipAsync(Scholarship scholarship)
     {
-        var existingScholarship = await GetScholarshipByIdAsync(scholarship.Id);
-        if (existingScholarship == null)
+        var existingScholarship = await db.Scholarships.FindAsync(scholarship.Id);
+        if (existingScholarship != null)
         {
-            throw new ArgumentException($"Scholarship with ID {scholarship.Id} does not exist.");
+
+            db.Entry(existingScholarship).CurrentValues.SetValues(scholarship);
+            await db.SaveChangesAsync();
+            return Result<Scholarship>.Success(scholarship);
         }
 
-        db.Entry(existingScholarship).CurrentValues.SetValues(scholarship);
-        await db.SaveChangesAsync();
-        return scholarship;
+        return Result<Scholarship>.Failure("Scholarship does not exist.");
     }
 
     /// <inheritdoc />
-    public async Task<IEnumerable<Scholarship>> GetScholarshipsByCountryAsync(string country)
+    public async Task<Result<IEnumerable<Scholarship>>> GetScholarshipsByCountryAsync(Guid countryId)
     {
-        return await db.Scholarships
-                       .Where(scholarship => scholarship.Country == country)
-                       .ToListAsync();
+        var scholarships = await db.Scholarships
+                                   .Include(scholarship => scholarship.Country)
+                                   .Where(scholarship => scholarship.CountryId == countryId)
+                                   .OrderBy(scholarship => scholarship.Name)
+                                   .ToListAsync();
+
+        return Result<IEnumerable<Scholarship>>.Success(scholarships);
     }
 }

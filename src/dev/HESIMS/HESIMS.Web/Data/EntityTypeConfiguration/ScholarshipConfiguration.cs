@@ -6,9 +6,10 @@ public class ScholarshipConfiguration : IEntityTypeConfiguration<Scholarship>
     {
         builder.HasKey(scholarship => scholarship.Id);
 
-        builder.Property(scholarship => scholarship.Country).IsRequired();
-
-        builder.HasIndex(scholarship => scholarship.Name).IsUnique();
+        builder.HasOne(scholarship => scholarship.Country)
+            .WithMany(country => country.Scholarships)
+            .HasForeignKey(scholarship => scholarship.CountryId);
+            
         builder.Property(scholarship => scholarship.Name).IsRequired();
     }
 }

@@ -13,10 +13,15 @@ public class Scholarship
     /// <summary>
     /// Country offering the scholarship.
     /// </summary>
-    public string? Country { get; set; }
+    public Guid? CountryId { get; set; }
 
     /// <summary>
     /// Scholarship name.
     /// </summary>
     public string? Name { get; set; }
+
+    /// <summary>
+    /// Country offering the scholarship.
+    /// </summary>
+    public Country? Country { get; set; }
 }

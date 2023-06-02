@@ -16,9 +16,14 @@ public record ScholarshipViewModel
     public string? ScholarshipName { get; set; }
 
     /// <summary>
+    /// Id of the country offering the scholarship.
+    /// </summary>
+    public Guid? CountryId { get; set; }
+
+    /// <summary>
     /// Country offering the scholarship.
     /// </summary>
-    public string? Country { get; set; }
+    public CountryViewModel? Country { get; set; }
 
     /// <summary>
     /// Validates the scholarship view model.
@@ -34,9 +39,9 @@ public record ScholarshipViewModel
             result = Result<bool>.Failure("Scholarship name is required.");
         }
 
-        if (string.IsNullOrWhiteSpace(Country))
+        if (!CountryId.HasValue || CountryId == Guid.Empty)
         {
-            result = Result<bool>.Failure("Country is required.");
+            result = Result<bool>.Failure("Country ID is required.");
         }
 
         var isEmptyOrDefaultGuidScholarshipId = !ScholarshipId.HasValue || ScholarshipId == Guid.Empty;

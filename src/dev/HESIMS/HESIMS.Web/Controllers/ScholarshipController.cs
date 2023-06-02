@@ -21,14 +21,25 @@ public class ScholarshipController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetScholarshipsAsync()
     {
-        var scholarships = await scholarshipService.GetScholarshipsAsync();
+        var scholarshipsQueryResult = await scholarshipService.GetScholarshipsAsync();
+        if (!scholarshipsQueryResult.IsSuccess)
+        {
+            return BadRequest(scholarshipsQueryResult.ErrorMessage);
+        }
+
+        var scholarships = scholarshipsQueryResult.Value;
         if (scholarships != null && scholarships.Count() > 0)
         {
             return Ok(scholarships.Select(scholarship => new ScholarshipViewModel
             {
                 ScholarshipId = scholarship.Id,
                 ScholarshipName = scholarship.Name,
-                Country = scholarship.Country
+                CountryId = scholarship.CountryId,
+                Country = new CountryViewModel{
+                    CountryId = scholarship.Country?.Id,
+                    CountryName = scholarship.Country?.Name,
+                    CountryCode = scholarship.Country?.Code
+                }
             }));
         }
 
@@ -38,7 +49,13 @@ public class ScholarshipController : BaseController
     [HttpGet("{id}")]
     public async Task<IActionResult> GetScholarshipByIdAsync(Guid id)
     {
-        var scholarship = await scholarshipService.GetScholarshipByIdAsync(id);
+        var scholarshipQueryResult = await scholarshipService.GetScholarshipByIdAsync(id);
+        if (!scholarshipQueryResult.IsSuccess)
+        {
+            return BadRequest(scholarshipQueryResult.ErrorMessage);
+        }
+
+        var scholarship = scholarshipQueryResult.Value;
         if (scholarship == null)
         {
             return NotFound();
@@ -48,7 +65,12 @@ public class ScholarshipController : BaseController
         {
             ScholarshipId = scholarship.Id,
             ScholarshipName = scholarship.Name,
-            Country = scholarship.Country
+            CountryId = scholarship.CountryId,
+            Country = new CountryViewModel{
+                CountryId = scholarship.Country?.Id,
+                CountryName = scholarship.Country?.Name,
+                CountryCode = scholarship.Country?.Code
+            }
         });
     }
 
@@ -65,7 +87,7 @@ public class ScholarshipController : BaseController
         {
             Id = Guid.NewGuid(),
             Name = scholarship.ScholarshipName,
-            Country = scholarship.Country
+            CountryId = scholarship.CountryId
         };
 
         try
@@ -88,7 +110,7 @@ public class ScholarshipController : BaseController
             {
                 ScholarshipId = newScholarship.Id,
                 ScholarshipName = newScholarship.Name,
-                Country = newScholarship.Country
+                CountryId = newScholarship.CountryId
             });
     }
 
@@ -101,18 +123,23 @@ public class ScholarshipController : BaseController
             return BadRequest(validationResult.ErrorMessage);
         }
 
-        var updatedScholarship = await scholarshipService.UpdateScholarshipAsync(new Scholarship
+        var updateScholarshipResult = await scholarshipService.UpdateScholarshipAsync(new Scholarship
         {
             Id = id,
             Name = scholarship.ScholarshipName,
-            Country = scholarship.Country
+            CountryId = scholarship.CountryId
         });
+        if (!updateScholarshipResult.IsSuccess)
+        {
+            return BadRequest(updateScholarshipResult.ErrorMessage);
+        }
 
+        var updatedScholarship = updateScholarshipResult.Value;
         return Ok(new ScholarshipViewModel
         {
-            ScholarshipId = updatedScholarship.Id,
-            ScholarshipName = updatedScholarship.Name,
-            Country = updatedScholarship.Country
+            ScholarshipId = updatedScholarship?.Id,
+            ScholarshipName = updatedScholarship?.Name,
+            CountryId = updatedScholarship?.CountryId
         });
     }
 }
