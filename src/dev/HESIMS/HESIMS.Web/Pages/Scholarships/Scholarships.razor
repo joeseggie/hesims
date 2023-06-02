@@ -4,14 +4,17 @@
 <PageTitle>HESIMS - Scholarships</PageTitle>
 
 <h3>Scholarships List</h3>
+<hr />
 
-<NavLink href="scholarships/new" class="btn btn-primary btn-sm">Add Scholarship Program</NavLink><br /><br />
+<AddScholarship OnScholarshipSubmit="AddScholarshipAsync" />
 
 <table class="table table-striped table-sm">
     <thead>
         <tr>
             <th>Scholarship</th>
-            <th class="col-2">Offering Country</th>
+            <th>Country</th>
+            <th>Institutions</th>
+            <th>Students</th>
         </tr>
     </thead>
     <tbody>
@@ -23,7 +26,9 @@
                     <td>
                         <NavLink href="@($"scholarships/{scholarship.ScholarshipId}")">@scholarship.ScholarshipName</NavLink>
                     </td>
-                    <td class="col-2">@scholarship.Country</td>
+                    <td>@scholarship.Country?.CountryName</td>
+                    <td></td>
+                    <td></td>
                 </tr>
             }
         }
@@ -37,6 +42,15 @@
     protected override async Task OnInitializedAsync()
     {
         scholarships = await Http.GetFromJsonAsync<List<ScholarshipViewModel>>($"{NavigationManager.BaseUri}api/scholarships");
+    }
+
+    private async Task AddScholarshipAsync(ScholarshipViewModel scholarship)
+    {
+        var response = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}api/scholarships", scholarship);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}");
+        }
     }
 
 }

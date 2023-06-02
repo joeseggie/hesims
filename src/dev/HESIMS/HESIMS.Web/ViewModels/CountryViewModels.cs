@@ -3,6 +3,7 @@ namespace HESIMS.Web.ViewModels;
 /// <summary>
 /// Country view model.
 /// </summary>
+[TypeConverter(typeof(CountryViewModelConverter))]
 public record CountryViewModel
 {
     /// <summary>
@@ -19,6 +20,11 @@ public record CountryViewModel
     /// Gets or sets the country code.
     /// </summary>
     public string? CountryCode { get; set; }
+
+    /// <summary>
+    /// Gets or sets the scholarships offered by the country.
+    /// </summary>
+    public IEnumerable<ScholarshipViewModel>? Scholarships { get; set; }
 
     /// <summary>
     /// Validates the country view model.

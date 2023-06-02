@@ -8,7 +8,6 @@
 
 <div class="btn-group">
     <NavLink href="/" class="btn btn-primary btn-sm" aria-current="page">Scholarships List</NavLink>
-    <NavLink href="scholarships/new" class="btn btn-primary btn-sm" aria-current="page">Add Scholarship</NavLink>
 </div><br /><br />
 
 @if (Scholarship != null)
@@ -17,14 +16,23 @@
         <div class="card-body">
             <form>
                 <input type="hidden" @bind="Scholarship.ScholarshipId" />
-                <div class="form-group">
+                <div class="form-group mb-3">
                     <label>Scholarship Program</label>
                     <input @bind="Scholarship.ScholarshipName" class="form-control" placeholder="Scholarship program">
-                </div><br />
-                <div class="form-group">
+                </div>
+                <div class="form-group mb-3">
                     <label>Offering Country</label>
-                    <input @bind="Scholarship.Country" class="form-control" placeholder="Offfering country">
-                </div><br />
+                    <select @bind="Scholarship.CountryId" class="form-select">
+                        <option selected>Select a country</option>
+                        @if (Countries != null)
+                        {
+                            @foreach (var country in Countries)
+                            {
+                                <option value="@country.CountryId">@country.CountryName</option>
+                            }
+                        }
+                    </select>
+                </div>
                 <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Save Changes</button>
             </form>
         </div>
@@ -37,11 +45,13 @@
 
     [Parameter] public Guid Id { get; set; }
 
-    public ScholarshipViewModel? Scholarship { get; set; } = new ScholarshipViewModel();
+    private ScholarshipViewModel? Scholarship { get; set; } = new ScholarshipViewModel();
+    private List<CountryViewModel>? Countries { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         Scholarship = await Http.GetFromJsonAsync<ScholarshipViewModel>($"{NavigationManager.BaseUri}api/scholarships/{Id}");
+        Countries = await Http.GetFromJsonAsync<List<CountryViewModel>>($"{NavigationManager.BaseUri}api/countries");
     }
 
     private async Task Submit()

@@ -15,6 +15,7 @@
             <th>Country</th>
             <th>Code</th>
             <th>Scholarships</th>
+            <th>Insitutions</th>
             <th>Students</th>
         </tr>
     </thead>
@@ -28,6 +29,7 @@
                         <NavLink href="@($"countries/{country.CountryId}")">@country.CountryName</NavLink>
                     </td>
                     <td>@country.CountryCode</td>
+                    <td class="text-align-center">@country.Scholarships?.Count()</td>
                     <td></td>
                     <td></td>
                 </tr>

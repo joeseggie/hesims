@@ -63,6 +63,7 @@ public class CountryService : ICountryService
     public async Task<Result<IEnumerable<Country>>> GetCountriesAsync()
     {
         var countries = await dbContext.Countries
+                                       .Include(country => country.Scholarships)
                                        .OrderBy(country => country.Name)
                                        .ToListAsync();
 
@@ -72,7 +73,9 @@ public class CountryService : ICountryService
     /// <inheritdoc/>
     public async Task<Result<Country?>> GetCountryByIdAsync(Guid id)
     {
-        var country = await dbContext.Countries.FindAsync(id);
+        var country = await dbContext.Countries
+                                     .Include(country => country.Scholarships)
+                                     .FirstOrDefaultAsync(country => country.Id == id);
 
         return Result<Country?>.Success(country);
     }

@@ -13,4 +13,7 @@ global using Microsoft.AspNetCore.Mvc;
 global using HESIMS.Web.ViewModels;
 global using HESIMS.Web.Common;
 global using Microsoft.Data.SqlClient;
-global using System.ComponentModel.DataAnnotations;
+global using HESIMS.Web.Converters;
+global using System.ComponentModel;
+global using System.Globalization;
+global using System.Text.Json;

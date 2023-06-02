@@ -33,7 +33,19 @@ public class CountryController : BaseController
             {
                 CountryId = country.Id,
                 CountryName = country.Name,
-                CountryCode = country.Code
+                CountryCode = country.Code,
+                Scholarships = country.Scholarships?.Select(scholarship => new ScholarshipViewModel
+                {
+                    ScholarshipId = scholarship.Id,
+                    ScholarshipName = scholarship.Name,
+                    CountryId = scholarship.CountryId,
+                    Country = new CountryViewModel
+                    {
+                        CountryId = scholarship.Country?.Id,
+                        CountryName = scholarship.Country?.Name,
+                        CountryCode = scholarship.Country?.Code
+                    }
+                })
             }));
         }
 
@@ -59,7 +71,19 @@ public class CountryController : BaseController
         {
             CountryId = country.Id,
             CountryName = country.Name,
-            CountryCode = country.Code
+            CountryCode = country.Code,
+            Scholarships = country.Scholarships?.Select(scholarship => new ScholarshipViewModel
+            {
+                ScholarshipId = scholarship.Id,
+                ScholarshipName = scholarship.Name,
+                CountryId = scholarship.CountryId,
+                Country = new CountryViewModel
+                {
+                    CountryId = scholarship.Country?.Id,
+                    CountryName = scholarship.Country?.Name,
+                    CountryCode = scholarship.Country?.Code
+                }
+            })
         });
     }
 
