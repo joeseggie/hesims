@@ -64,6 +64,7 @@ public class CountryService : ICountryService
     {
         var countries = await dbContext.Countries
                                        .Include(country => country.Scholarships)
+                                       .Include(country => country.Institutions)
                                        .OrderBy(country => country.Name)
                                        .ToListAsync();
 
@@ -75,6 +76,7 @@ public class CountryService : ICountryService
     {
         var country = await dbContext.Countries
                                      .Include(country => country.Scholarships)
+                                     .Include(country => country.Institutions)
                                      .FirstOrDefaultAsync(country => country.Id == id);
 
         return Result<Country?>.Success(country);

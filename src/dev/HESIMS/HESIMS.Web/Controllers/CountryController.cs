@@ -45,6 +45,12 @@ public class CountryController : BaseController
                         CountryName = scholarship.Country?.Name,
                         CountryCode = scholarship.Country?.Code
                     }
+                }),
+                Institutions = country.Institutions?.Select(institution => new InstitutionViewModel
+                {
+                    InstitutionId = institution.Id,
+                    InstitutionName = institution.Name,
+                    CountryId = institution.CountryId
                 })
             }));
         }
@@ -83,6 +89,12 @@ public class CountryController : BaseController
                     CountryName = scholarship.Country?.Name,
                     CountryCode = scholarship.Country?.Code
                 }
+            }),
+            Institutions = country.Institutions?.Select(institution => new InstitutionViewModel
+            {
+                InstitutionId = institution.Id,
+                InstitutionName = institution.Name,
+                CountryId = institution.CountryId
             })
         });
     }
@@ -126,16 +138,30 @@ public class CountryController : BaseController
         var validationResult = country.Validate(routeId: id, validateId: true);
         if (!validationResult.IsSuccess)
         {
-            return BadRequest(validationResult);
+            return BadRequest(validationResult.ErrorMessage);
         }
 
-        var countryId = await countryService.UpdateCountryAsync(new Country
+        var updateCountryResult = await countryService.UpdateCountryAsync(new Country
         {
             Id = id,
             Name = country.CountryName,
             Code = country.CountryCode
         });
+        if (!updateCountryResult.IsSuccess)
+        {
+            return BadRequest(updateCountryResult.ErrorMessage);
+        }
 
-        return Ok(country);
+        var updatedCountry = updateCountryResult.Value;
+
+        return Ok(CreatedAtAction(
+            nameof(GetCountryByIdAsync),
+            new { id = updatedCountry?.Id },
+            new CountryViewModel
+            {
+                CountryId = updatedCountry?.Id,
+                CountryName = updatedCountry?.Name,
+                CountryCode = updatedCountry?.Code
+            }));
     }
 }

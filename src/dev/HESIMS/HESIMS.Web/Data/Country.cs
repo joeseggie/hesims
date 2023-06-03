@@ -24,4 +24,9 @@ public class Country
     /// Country's scholarships.
     /// </summary>
     public IEnumerable<Scholarship>? Scholarships { get; set; }
+
+    /// <summary>
+    /// Country's institutions.
+    /// </summary>
+    public IEnumerable<Institution>? Institutions { get; set; }
 }

@@ -27,7 +27,7 @@
 </div>
 
 @code {
-    [Parameter] public ScholarshipViewModel Scholarship { get; set; } = new ScholarshipViewModel();
+    [Parameter] public ScholarshipViewModel Scholarship { get; set; } = new ();
 
     [Parameter] public EventCallback<ScholarshipViewModel> OnScholarshipSubmit { get; set; }
 

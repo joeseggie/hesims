@@ -1,0 +1,62 @@
+@page "/institutions"
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>HESIMS - Institutions</PageTitle>
+
+<h3>Institutions</h3>
+<hr class="mb-3" />
+
+<AddInstitution OnInstitutionSubmit="AddInstitutionAsync" />
+
+@if (institutions == null || institutions.Count == 0)
+{
+    <p><em>Add new institution...</em></p>
+}
+else
+{
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th>Institution</th>
+                <th>Country</th>
+                <th>Students</th>
+                <th>Courses</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var institution in institutions)
+            {
+                <tr>
+                    <td>
+                        <NavLink href="@($"institutions/{institution.InstitutionId}")">@institution?.InstitutionName</NavLink>
+                    </td>
+                    <td>
+                        <NavLink href="@($"countries/{institution.CountryId}")">@institution?.Country?.CountryName</NavLink>
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code{
+    List<InstitutionViewModel>? institutions = new ();
+
+    protected override async Task OnInitializedAsync()
+    {
+        institutions = await Http.GetFromJsonAsync<List<InstitutionViewModel>>($"{NavigationManager.BaseUri}api/institutions");
+    }
+
+    private async Task AddInstitutionAsync(InstitutionViewModel institution)
+    {
+        var response = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}api/institutions", institution);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}/institutions", true);
+        }
+    }
+}
