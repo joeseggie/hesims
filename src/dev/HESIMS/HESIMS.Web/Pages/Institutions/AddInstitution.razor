@@ -1,0 +1,49 @@
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+@if (Institution != null)
+{
+    <div class="card bg-light mb-4">
+        <div class="card-body">
+            <form>
+                <div class="form-group mb-3">
+                    <label>Institution Name</label>
+                    <input @bind="Institution.InstitutionName" class="form-control" placeholder="Enter institution name">
+                </div>
+                <div class="form-group mb-3">
+                    <label>Country</label>
+                    <select @bind="Institution.CountryId" class="form-select">
+                        <option selected>Select a country</option>
+                        @if (countries != null)
+                        {
+                            @foreach (var country in countries)
+                            {
+                                <option value="@country.CountryId">@country.CountryName</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-danger btn-sm" @onclick="Submit" type="submit">Add Institution</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@code {
+    private List<CountryViewModel>? countries { get; set; } = new ();
+
+    [Parameter] public InstitutionViewModel Institution { get; set; } = new ();
+    [Parameter] public EventCallback<InstitutionViewModel> OnInstitutionSubmit { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        countries = await Http.GetFromJsonAsync<List<CountryViewModel>>($"{NavigationManager.BaseUri}api/countries");
+    }
+
+    private async Task Submit()
+    {
+        await OnInstitutionSubmit.InvokeAsync(Institution);
+    }
+}

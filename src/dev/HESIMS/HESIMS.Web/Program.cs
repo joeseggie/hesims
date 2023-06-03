@@ -19,6 +19,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IScholarshipService, ScholarshipService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<IInstitutionService, InstitutionService>();
 
 var app = builder.Build();
 

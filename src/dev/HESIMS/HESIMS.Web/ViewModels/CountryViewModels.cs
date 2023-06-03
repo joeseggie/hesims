@@ -27,6 +27,11 @@ public record CountryViewModel
     public IEnumerable<ScholarshipViewModel>? Scholarships { get; set; }
 
     /// <summary>
+    /// Gets or sets the institutions in the country.
+    /// </summary>
+    public IEnumerable<InstitutionViewModel>? Institutions { get; set; }
+
+    /// <summary>
     /// Validates the country view model.
     /// </summary>
     /// <param name="routeId">Route Id.</param>

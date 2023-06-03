@@ -5,11 +5,11 @@
 <PageTitle>HESIMS - Scholarship Offering Countries</PageTitle>
 
 <h3>Scholarship Offering Countries</h3>
-<hr />
+<hr class="mb-3" />
 
 <AddCountry OnCountrySubmit="AddCountryAsync" />
 
-<table class="table table-responsive table-condensed table-striped">
+<table class="table table-striped table-sm">
     <thead>
         <tr>
             <th>Country</th>
@@ -30,7 +30,7 @@
                     </td>
                     <td>@country.CountryCode</td>
                     <td class="text-align-center">@country.Scholarships?.Count()</td>
-                    <td></td>
+                    <td>@country.Institutions?.Count()</td>
                     <td></td>
                 </tr>
             }
