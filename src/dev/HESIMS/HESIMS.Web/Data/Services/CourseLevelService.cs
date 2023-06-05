@@ -87,6 +87,11 @@ public class CourseLevelService : ICourseLevelService
     public async Task<Result<CourseLevel?>> GetCourseLevelByIdAsync(Guid id)
     {
         var courseLevel = await db.CourseLevels.FindAsync(id);
+        if (courseLevel == null)
+        {
+            return Result<CourseLevel?>.Failure($"Course level with ID {id} not found.");
+        }
+        
         return Result<CourseLevel?>.Success(courseLevel);
     }
 }
