@@ -17,6 +17,8 @@ public class ApplicationDbContext : IdentityDbContext
 
     public DbSet<Institution> Institutions { get; set; } = default!;
 
+    public DbSet<CourseLevel> CourseLevels { get; set; } = default!;
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder); // This is required for IdentityDbContext to work.
@@ -25,5 +27,6 @@ public class ApplicationDbContext : IdentityDbContext
         new CourseConfiguration().Configure(builder.Entity<Course>());
         new CountryConfiguration().Configure(builder.Entity<Country>());
         new InstitutionConfiguration().Configure(builder.Entity<Institution>());
+        new CourseLevelConfiguration().Configure(builder.Entity<CourseLevel>());
     }
 }

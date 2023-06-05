@@ -23,9 +23,9 @@ public class InstitutionsController : BaseController
     /// </summary>
     /// <returns>List of institutions.</returns>
     [HttpGet]
-    public async Task<IActionResult> GetInstitutionsAsync()
+    public async Task<IActionResult> GetInstitutionsAsync([FromQuery] Guid? countryId = null)
     {
-        var institutionsQueryResult = await institutionService.GetInstitutionsAsync();
+        var institutionsQueryResult = await institutionService.GetInstitutionsAsync(countryId);
         if (!institutionsQueryResult.IsSuccess)
         {
             return BadRequest(institutionsQueryResult.ErrorMessage);

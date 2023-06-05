@@ -1,54 +1,65 @@
-﻿@page "/courses/new"
-@inject HttpClient Http
+﻿@inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<PageTitle>HESIMS - Add Course</PageTitle>
-
-<h3>Add Course</h3>
-
-<div class="btn-group">
-    <NavLink href="courses" class="btn btn-primary btn-sm">Courses List</NavLink>
-</div>
-<br />
-<br />
-
-<div class="col-8">
-    <form>
-        <div class="form-group">
-            <label>Course Name</label>
-            <input @bind="Course.CourseName" class="form-control" placeholder="Course name">
-        </div><br />
-        <div class="form-group">
-            <label>Institution</label>
-            <input @bind="Course.Institution" class="form-control" placeholder="Institution">
-        </div><br />
-        <div class="form-group">
-            <label>Duration</label>
-            <input @bind="Course.Duration" type="number" class="form-control" placeholder="Course duration">
-        </div><br />
-        <div class="form-group">
-            <label>Course Level</label>
-            <input @bind="Course.CourseLevel" class="form-control" placeholder="Course Level">
-        </div><br />
-        <div class="form-group">
-            <label>Country</label>
-            <input @bind="Course.InstitutionCountry" class="form-control" placeholder="Country">
-        </div><br />
-        <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Submit</button>
-    </form>
+<div class="card bg-light mb-4">
+    <div class="card-body">
+        <form>
+            <div class="form-group">
+                <label>Course Name</label>
+                <input @bind="course.CourseName" class="form-control" placeholder="Course name">
+            </div><br />
+            <div class="form-group mb-3">
+                <label>Institution</label>
+                <select @bind="course.InstitutionId" class="form-select">
+                    <option selected>Select institution</option>
+                    @if (institutions != null)
+                    {
+                        @foreach (var institution in institutions)
+                        {
+                            <option value="@institution.InstitutionId">@institution.InstitutionName</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Duration</label>
+                <input @bind="course.Duration" type="number" class="form-control" placeholder="Course duration">
+            </div><br />
+            <div class="form-group mb-3">
+                <label>Course Level</label>
+                <select @bind="course.CourseLevelId" class="form-select">
+                    <option selected>Select course Level</option>
+                    @if (courseLevels != null)
+                    {
+                        @foreach (var courseLevel in courseLevels)
+                        {
+                            <option value="@courseLevel.CourseLevelId">@courseLevel.CourseLevelDescription</option>
+                        }
+                    }
+                </select>
+            </div>
+            <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Add Course</button>
+        </form>
+    </div>
 </div>
 
 @code {
+    [Parameter] public CourseViewModel course { get; set; } = new();
+    
+    [Parameter] public EventCallback<CourseViewModel> OnCourseSubmit { get; set; }
 
-    [Parameter] public CourseViewModel Course { get; set; } = new CourseViewModel();
+    private List<InstitutionViewModel>? institutions = new();
+    private List<CourseLevelViewModel>? courseLevels = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        institutions = await
+        Http.GetFromJsonAsync<List<InstitutionViewModel>>($"{NavigationManager.BaseUri}api/institutions?countryId={course?.Institution?.CountryId}");
+        courseLevels = await Http.GetFromJsonAsync<List<CourseLevelViewModel>>($"{NavigationManager.BaseUri}api/courselevels");
+    }
 
     private async Task Submit()
     {
-        var response = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}api/courses", Course);
-        if (response.IsSuccessStatusCode)
-        {
-            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}courses", true);
-        }
+        await OnCourseSubmit.InvokeAsync(course);
     }
-
 }

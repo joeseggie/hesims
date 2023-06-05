@@ -21,19 +21,24 @@ public record CourseViewModel
     public int? Duration { get; set; }
 
     /// <summary>
+    /// Id of course level.
+    /// </summary>
+    public Guid? CourseLevelId { get; set; }
+
+    /// <summary>
     /// Course level.
     /// </summary>
-    public string? CourseLevel { get; set; }
+    public CourseLevelViewModel? CourseLevel { get; set; }
 
     /// <summary>
-    /// Insitution offering the course.
+    /// Id of Insitution offering the course.
     /// </summary>
-    public string? Institution { get; set; }
+    public Guid? InstitutionId { get; set; }
 
     /// <summary>
-    /// Country of the institution.
+    /// Institution offering the course.
     /// </summary>
-    public string? InstitutionCountry { get; set; }
+    public InstitutionViewModel? Institution { get; set; }
 
     /// <summary>
     /// Validates the course view model.

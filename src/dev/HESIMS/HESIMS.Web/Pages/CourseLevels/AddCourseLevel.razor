@@ -1,0 +1,25 @@
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<div class="card bg-light mb-4">
+    <div class="card-body">
+        <form>
+            <div class="form-group mb-3">
+                <label>Course Level</label>
+                <input @bind="courseLevel.CourseLevelDescription" class="form-control" placeholder="Course level description">
+            </div>
+            <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Add Course Level</button>
+        </form>
+    </div>
+</div>
+
+@code {
+    [Parameter] public CourseLevelViewModel courseLevel { get; set; } = new();
+    
+    [Parameter] public EventCallback<CourseLevelViewModel> OnCourseLevelSubmit { get; set; }
+
+    private async Task Submit()
+    {
+        await OnCourseLevelSubmit.InvokeAsync(courseLevel);
+    }
+}

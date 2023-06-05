@@ -24,4 +24,9 @@ public class Institution
     /// Country where the institution is located.
     /// </summary>
     public Country? Country { get; set; }
+
+    /// <summary>
+    /// Courses offered by the institution.
+    /// </summary>
+    public IEnumerable<Course>? Courses { get; set; }
 }
