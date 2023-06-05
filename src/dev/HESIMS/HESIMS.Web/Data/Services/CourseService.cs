@@ -8,29 +8,30 @@ public interface ICourseService
     /// <summary>
     /// Get courses.
     /// </summary>
-    /// <param name="country">Country where the course is offered.</param>
+    /// <param name="courseLevelId">Course level ID.</param>
+    /// <param name="institutionId">Institution ID.</param>
     /// <returns>List of courses.</returns>
-    Task<IEnumerable<Course>> GetCoursesAsync(string? country = null);
+    Task<Result<IEnumerable<Course>>> GetCoursesAsync(Guid? courseLevelId = null, Guid? institutionId = null);
 
     /// <summary>
     /// Add new course.
     /// </summary>
-    /// <param name="course">New course details</param>
-    Task AddCourseAsync(Course course);
+    /// <param name="newCourse">New course details</param>
+    Task<Result<Course>> AddCourseAsync(Course newCourse);
 
     /// <summary>
     /// Update course details.
     /// </summary>
-    /// <param name="course">Course update details.</param>
+    /// <param name="courseUpdate">Course update details.</param>
     /// <returns>updated course details.</returns>
-    Task<Course> UpdateCourseAsync(Course course);
+    Task<Result<Course>> UpdateCourseAsync(Course courseUpdate);
 
     /// <summary>
     /// Get course by Id.
     /// </summary>
     /// <param name="id">Course ID.</param>
     /// <returns>Course if ID exist, otherwise null</returns>
-    Task<Course?> GetCourseByIdAsync(Guid id);
+    Task<Result<Course?>> GetCourseByIdAsync(Guid id);
 }
 
 /// <summary>
@@ -49,42 +50,73 @@ public class CourseService : ICourseService
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<Course>> GetCoursesAsync(string? country = null)
+    public async Task<Result<IEnumerable<Course>>> GetCoursesAsync(Guid? courseLevelId = null, Guid? institutionId = null)
     {
-        var courses = db.Courses.AsQueryable();
-        if (country != null)
+        var courses = db.Courses
+                        .Include(course => course.CourseLevel)
+                        .Include(course => course.Institution)
+                        .ThenInclude(institution => institution!.Country)
+                        .AsQueryable();
+
+        if (courseLevelId != null)
         {
-            courses = courses.Where(course => course.InstitutionCountry != null &&
-                                              course.InstitutionCountry.ToLower() == country.ToLower());
+            courses = courses.Where(course => course.CourseLevelId == courseLevelId);
         }
 
-        return await courses.ToListAsync();
-    }
-
-    /// <inheritdoc/>
-    public async Task AddCourseAsync(Course course)
-    {
-        await db.Courses.AddAsync(course);
-        await db.SaveChangesAsync();
-    }
-
-    /// <inheritdoc/>
-    public async Task<Course> UpdateCourseAsync(Course course)
-    {
-        var existingCourse = await db.Courses.FindAsync(course.Id);
-        if (existingCourse == null)
+        if (institutionId != null)
         {
-            throw new ArgumentException($"Course with ID {course.Id} does not exist.");
+            courses = courses.Where(course => course.InstitutionId == institutionId);
         }
 
-        db.Entry(existingCourse).CurrentValues.SetValues(course);
+        return Result<IEnumerable<Course>>.Success(await courses.ToListAsync());
+    }
+
+
+    /// <inheritdoc/>
+    public async Task<Result<Course>> AddCourseAsync(Course newCourse)
+    {
+        var escapedCourseName = newCourse.Name?.ToLower();
+        var isDuplicateCourseName = db.Institutions
+                                      .Any(institution => institution.Name != null && institution.Name.ToLower() == escapedCourseName);
+        if (isDuplicateCourseName)
+        {
+            return Result<Course>.Failure($"Course with name {newCourse.Name} already exists.");
+        }
+
+        db.Courses.Add(newCourse);
         await db.SaveChangesAsync();
-        return course;
+
+        return Result<Course>.Success(newCourse);
     }
 
     /// <inheritdoc/>
-    public async Task<Course?> GetCourseByIdAsync(Guid id)
+    public async Task<Result<Course>> UpdateCourseAsync(Course courseUpdate)
     {
-        return await db.Courses.FindAsync(id);
+        var courseToUpdate = await db.Courses.FindAsync(courseUpdate.Id);
+        if (courseToUpdate == null)
+        {
+            return Result<Course>.Failure($"Course with ID {courseUpdate.Id} does not exist.");
+        }
+
+        db.Entry(courseToUpdate).CurrentValues.SetValues(courseUpdate);
+        await db.SaveChangesAsync();
+
+        return Result<Course>.Success(courseToUpdate);
+    }
+
+    /// <inheritdoc/>
+    public async Task<Result<Course?>> GetCourseByIdAsync(Guid id)
+    {
+        var course = await db.Courses
+                             .Include(course => course.CourseLevel)
+                             .Include(course => course.Institution)
+                             .ThenInclude(institution => institution!.Country)
+                             .FirstOrDefaultAsync(course => course.Id == id);
+        if (course == null)
+        {
+            return Result<Course?>.Failure($"Course with ID {id} does not exist.");
+        }
+
+        return Result<Course?>.Success(course);
     }
 }

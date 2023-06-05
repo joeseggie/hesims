@@ -13,7 +13,13 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
     {
         builder.HasKey(course => course.Id);
         builder.Property(course => course.Name).IsRequired();
-        builder.Property(course => course.Institution).IsRequired();
-        builder.Property(course => course.InstitutionCountry).IsRequired();
+        
+        builder.HasOne(course => course.CourseLevel)
+               .WithMany(courseLevel => courseLevel.Courses)
+               .HasForeignKey(course => course.CourseLevelId);
+        
+        builder.HasOne(course => course.Institution)
+               .WithMany(institution => institution.Courses)
+               .HasForeignKey(course => course.InstitutionId);
     }
 }

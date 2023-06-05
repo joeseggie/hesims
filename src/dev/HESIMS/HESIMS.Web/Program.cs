@@ -20,6 +20,7 @@ builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IScholarshipService, ScholarshipService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IInstitutionService, InstitutionService>();
+builder.Services.AddScoped<ICourseLevelService, CourseLevelService>();
 
 var app = builder.Build();
 

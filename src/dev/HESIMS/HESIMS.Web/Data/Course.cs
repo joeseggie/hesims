@@ -23,15 +23,20 @@ public class Course
     /// <summary>
     /// Course level.
     /// </summary>
-    public string? CourseLevel { get; set; }
+    public Guid? CourseLevelId { get; set; }
 
     /// <summary>
-    /// Insitution offering the course.
+    /// Id of insitution offering the course.
     /// </summary>
-    public string? Institution { get; set; }
+    public Guid? InstitutionId { get; set; }
 
     /// <summary>
-    /// Country of the institution.
+    /// Course level.
     /// </summary>
-    public string? InstitutionCountry { get; set; }
+    public CourseLevel? CourseLevel { get; set; }
+
+    /// <summary>
+    /// Institution offering the course.
+    /// </summary>
+    public Institution? Institution { get; set; }
 }

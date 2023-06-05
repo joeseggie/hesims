@@ -54,9 +54,5 @@ else
     private async Task AddInstitutionAsync(InstitutionViewModel institution)
     {
         var response = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}api/institutions", institution);
-        if (response.IsSuccessStatusCode)
-        {
-            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}/institutions", true);
-        }
     }
 }

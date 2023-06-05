@@ -18,19 +18,41 @@ public class CoursesController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetCoursesAsync([FromQuery] string? country = null)
+    public async Task<IActionResult> GetCoursesAsync([FromQuery] Guid? courseLevelId = null, [FromQuery] Guid? institutionId = null)
     {
-        var courses = await courseService.GetCoursesAsync(country);
+        var coursesQueryResult = await courseService.GetCoursesAsync(courseLevelId, institutionId);
+        if (!coursesQueryResult.IsSuccess)
+        {
+            return BadRequest(coursesQueryResult.ErrorMessage);
+        }
+
+        var courses = coursesQueryResult.Value;
         if (courses != null && courses.Count() > 0)
         {
             return Ok(courses.Select(course => new CourseViewModel
             {
                 CourseId = course.Id,
                 CourseName = course.Name,
-                Institution = course.Institution,
-                InstitutionCountry = course.InstitutionCountry,
-                CourseLevel = course.CourseLevel,
-                Duration = course.Duration
+                Duration = course.Duration,
+                InstitutionId = course.Institution?.Id,
+                CourseLevelId = course.CourseLevel?.Id,
+                Institution = new InstitutionViewModel
+                {
+                    InstitutionId = course.Institution?.Id,
+                    InstitutionName = course.Institution?.Name,
+                    CountryId = course.Institution?.Country?.Id,
+                    Country = new CountryViewModel
+                    {
+                        CountryId = course.Institution?.Country?.Id,
+                        CountryName = course.Institution?.Country?.Name,
+                        CountryCode = course.Institution?.Country?.Code
+                    }
+                },
+                CourseLevel = new CourseLevelViewModel
+                {
+                    CourseLevelId = course.CourseLevel?.Id,
+                    CourseLevelDescription = course.CourseLevel?.Description
+                }
             }));
         }
 
@@ -40,20 +62,42 @@ public class CoursesController : BaseController
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCourseByIdAsync(Guid id)
     {
-        var course = await courseService.GetCourseByIdAsync(id);
+        var courseQueryResult = await courseService.GetCourseByIdAsync(id);
+        if (!courseQueryResult.IsSuccess)
+        {
+            return BadRequest(courseQueryResult.ErrorMessage);
+        }
+
+        var course = courseQueryResult.Value;
         if (course == null)
         {
-            return NotFound();
+            return NotFound("Course not found.");
         }
 
         return Ok(new CourseViewModel
         {
             CourseId = course.Id,
             CourseName = course.Name,
-            Institution = course.Institution,
-            InstitutionCountry = course.InstitutionCountry,
-            CourseLevel = course.CourseLevel,
-            Duration = course.Duration
+            Duration = course.Duration,
+            InstitutionId = course.Institution?.Id,
+            CourseLevelId = course.CourseLevel?.Id,
+            Institution = new InstitutionViewModel
+            {
+                InstitutionId = course.Institution?.Id,
+                InstitutionName = course.Institution?.Name,
+                CountryId = course.Institution?.Country?.Id,
+                Country = new CountryViewModel
+                {
+                    CountryId = course.Institution?.Country?.Id,
+                    CountryName = course.Institution?.Country?.Name,
+                    CountryCode = course.Institution?.Country?.Code
+                }
+            },
+            CourseLevel = new CourseLevelViewModel
+            {
+                CourseLevelId = course.CourseLevel?.Id,
+                CourseLevelDescription = course.CourseLevel?.Description
+            }
         });
     }
 
@@ -70,9 +114,8 @@ public class CoursesController : BaseController
         {
             Id = Guid.NewGuid(),
             Name = course.CourseName,
-            Institution = course.Institution,
-            InstitutionCountry = course.InstitutionCountry,
-            CourseLevel = course.CourseLevel,
+            InstitutionId = course.InstitutionId,
+            CourseLevelId = course.CourseLevelId,
             Duration = course.Duration ?? 0
         };
 
@@ -96,9 +139,8 @@ public class CoursesController : BaseController
              {
                  CourseId = newCourse.Id,
                  CourseName = newCourse.Name,
-                 Institution = newCourse.Institution,
-                 InstitutionCountry = newCourse.InstitutionCountry,
-                 CourseLevel = newCourse.CourseLevel,
+                 InstitutionId = newCourse.InstitutionId,
+                 CourseLevelId = newCourse.CourseLevelId,
                  Duration = newCourse.Duration
              });
     }
@@ -112,24 +154,27 @@ public class CoursesController : BaseController
             return BadRequest(validationResult.ErrorMessage);
         }
 
-        var updatedCourse = await courseService.UpdateCourseAsync(new Course
+        var updatedCourseResult = await courseService.UpdateCourseAsync(new Course
         {
             Id = id,
             Name = course.CourseName,
-            Institution = course.Institution,
-            InstitutionCountry = course.InstitutionCountry,
-            CourseLevel = course.CourseLevel,
+            InstitutionId = course.InstitutionId,
+            CourseLevelId = course.CourseLevelId,
             Duration = course.Duration ?? 0
         });
+        if (!updatedCourseResult.IsSuccess)
+        {
+            return BadRequest(updatedCourseResult.ErrorMessage);
+        }
 
+        var updatedCourse = updatedCourseResult.Value;
         return Ok(new CourseViewModel
         {
-            CourseId = updatedCourse.Id,
-            CourseName = updatedCourse.Name,
-            Institution = updatedCourse.Institution,
-            InstitutionCountry = updatedCourse.InstitutionCountry,
-            CourseLevel = updatedCourse.CourseLevel,
-            Duration = updatedCourse.Duration
+            CourseId = updatedCourse?.Id,
+            CourseName = updatedCourse?.Name,
+            InstitutionId = updatedCourse?.InstitutionId,
+            CourseLevelId = updatedCourse?.CourseLevelId,
+            Duration = updatedCourse?.Duration
         });
     }
 }

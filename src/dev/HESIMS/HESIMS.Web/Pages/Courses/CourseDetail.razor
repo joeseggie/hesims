@@ -13,60 +13,90 @@
 <br />
 <br />
 
-@if (Course != null)
+@if (course != null)
 {
     <div class="col-8">
         <form>
-            <input type="hidden" @bind="Course.CourseId" />
-            <div class="form-group">
+            <input type="hidden" @bind="course.CourseId" />
+            <div class="form-group mb-3">
                 <label>Course Name</label>
-                <input @bind="Course.CourseName" class="form-control" placeholder="Course name">
-            </div><br />
-            <div class="form-group">
-                <label>Institution</label>
-                <input @bind="Course.Institution" class="form-control" placeholder="Institution">
-            </div><br />
-            <div class="form-group">
-                <label>Duration</label>
-                <input @bind="Course.Duration" type="number" class="form-control" placeholder="Course duration">
-            </div><br />
-            <div class="form-group">
-                <label>Course Level</label>
-                <input @bind="Course.CourseLevel" class="form-control" placeholder="Course Level">
-            </div><br />
-            <div class="form-group">
+                <input @bind="course.CourseName" class="form-control" placeholder="Course name">
+            </div>
+            <div class="form-group mb-3">
                 <label>Country</label>
-                <input @bind="Course.InstitutionCountry" class="form-control" placeholder="Country">
-            </div><br />
-            <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Submit</button>
+                <select class="form-select" @bind="countryId">
+                    <option value="">Select country</option>
+                    @if (countries != null)
+                    {
+                        @foreach (var country in countries)
+                        {
+                            <option value="@country.CountryId">@country.CountryName</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group mb-3">
+                <label>Institution</label>
+                <select @bind="course.InstitutionId" class="form-select">
+                    <option selected>Select institution</option>
+                    @if (institutions != null)
+                    {
+                        @foreach (var institution in institutions)
+                        {
+                            <option value="@institution.InstitutionId">@institution.InstitutionName</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group mb-3">
+                <label>Duration</label>
+                <input @bind="course.Duration" type="number" class="form-control" placeholder="Course duration">
+            </div>
+            <div class="form-group mb-3">
+                <label>Course Level</label>
+                <select @bind="course.CourseLevelId" class="form-select">
+                    <option value="">Select course Level</option>
+                    @if (courseLevels != null)
+                    {
+                        @foreach (var courseLevel in courseLevels)
+                        {
+                            <option value="@courseLevel.CourseLevelId">@courseLevel.CourseLevelDescription</option>
+                        }
+                    }
+                </select>
+            </div>
+            <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Save Changes</button>
         </form>
     </div>
 }
 
 @code {
-
     [Parameter] public Guid Id { get; set; }
 
-    public CourseViewModel? Course { get; set; } = new();
+    private CourseViewModel? course = new();
+    private List<InstitutionViewModel>? institutions = new();
+    private List<CourseLevelViewModel>? courseLevels = new();
+    private List<CountryViewModel>? countries = new();
+    private Guid countryId;
 
     protected override async Task OnInitializedAsync()
     {
-        Course = await Http.GetFromJsonAsync<CourseViewModel>($"{NavigationManager.BaseUri}api/courses/{Id}");
+        countries = await Http.GetFromJsonAsync<List<CountryViewModel>>($"{NavigationManager.BaseUri}api/countries");
+        course = await Http.GetFromJsonAsync<CourseViewModel>($"{NavigationManager.BaseUri}api/courses/{Id}");
+        courseLevels = await Http.GetFromJsonAsync<List<CourseLevelViewModel>>($"{NavigationManager.BaseUri}api/courselevels");
+
+        if (Guid.TryParse(course?.Institution?.CountryId?.ToString(), out countryId))
+        {
+            institutions = await Http.GetFromJsonAsync<List<InstitutionViewModel>>($"{NavigationManager.BaseUri}api/institutions?countryId={countryId}");
+        }
     }
 
     async Task Submit()
     {
-        if (Course != null)
+        if (course != null)
         {
-            await Http.PutAsJsonAsync<CourseViewModel>($"{NavigationManager.BaseUri}api/courses/{Id}", Course);
+            await Http.PutAsJsonAsync<CourseViewModel>($"{NavigationManager.BaseUri}api/courses/{Id}", course);
             NavigationManager.NavigateTo($"{NavigationManager.BaseUri}courses/{Id}");
         }
     }
-
-    async Task DeleteCourse()
-    {
-        await Http.DeleteAsync($"api/courses/{Id}");
-        NavigationManager.NavigateTo("/courses");
-    }
-
 }

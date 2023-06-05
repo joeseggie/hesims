@@ -1,0 +1,54 @@
+@page "/courselevels"
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Course Levels</PageTitle>
+
+<h3>Course Levels</h3>
+<hr/>
+
+<div class="btn-group mb-3">
+    <NavLink href="courses" class="btn btn-outline-primary btn-sm">Courses List</NavLink>
+</div>
+
+<AddCourseLevel OnCourseLevelSubmit="AddCourseLevelAsync" />
+
+@if (courseLevels == null)
+{
+    <p><em>Add course level...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Course Level</th>
+                <th>Courses</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var courseLevel in courseLevels)
+            {
+                <tr>
+                    <td>@courseLevel.CourseLevelDescription</td>
+                    <td></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code{
+    private List<CourseLevelViewModel>? courseLevels;
+
+    protected override async Task OnInitializedAsync()
+    {
+        courseLevels = await Http.GetFromJsonAsync<List<CourseLevelViewModel>>($"{NavigationManager.BaseUri}api/courselevels");
+    }
+
+    private async Task AddCourseLevelAsync(CourseLevelViewModel courseLevel)
+    {
+        var response = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}api/courselevels", courseLevel);
+    }
+}

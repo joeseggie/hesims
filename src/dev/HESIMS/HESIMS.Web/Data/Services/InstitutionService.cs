@@ -27,8 +27,9 @@ public interface IInstitutionService
     /// <summary>
     /// Get institutions.
     /// </summary>
+    /// <param name="countryId">Country ID.</param>
     /// <returns>List of institutions.</returns>
-    Task<Result<IEnumerable<Institution>>> GetInstitutionsAsync();
+    Task<Result<IEnumerable<Institution>>> GetInstitutionsAsync(Guid? countryId = null);
 }
 
 /// <summary>
@@ -94,13 +95,14 @@ public class InstitutionService : IInstitutionService
     }
 
     /// <inheritdoc/>
-    public async Task<Result<IEnumerable<Institution>>> GetInstitutionsAsync()
+    public async Task<Result<IEnumerable<Institution>>> GetInstitutionsAsync(Guid? countryId = null)
     {
-        var institutions = await dbContext.Institutions
-                                          .Include(institution => institution.Country)
-                                          .OrderBy(institution => institution.Name)
-                                          .ToListAsync();
+        var institutions = dbContext.Institutions.Include(institution => institution.Country).AsQueryable();
+        if (countryId.HasValue)
+        {
+            institutions = institutions.Where(institution => institution.CountryId == countryId);
+        }
 
-        return Result<IEnumerable<Institution>>.Success(institutions);
+        return Result<IEnumerable<Institution>>.Success(await institutions.OrderBy(institution => institution.Name).ToListAsync());
     }
 }
