@@ -21,6 +21,11 @@ builder.Services.AddScoped<IScholarshipService, ScholarshipService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IInstitutionService, InstitutionService>();
 builder.Services.AddScoped<ICourseLevelService, CourseLevelService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IBankAccountService, BankAccountService>();
+builder.Services.AddScoped<IStudentContactService, StudentContactService>();
+builder.Services.AddScoped<IStudentCourseService, StudentCourseService>();
+builder.Services.AddScoped<ICourseRegistrationService, CourseRegistrationService>();
 
 var app = builder.Build();
 

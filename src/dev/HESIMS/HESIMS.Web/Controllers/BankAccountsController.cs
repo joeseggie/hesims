@@ -20,39 +20,84 @@ public class BankAccountsController : BaseController
     /// <summary>
     /// Add new bank account.
     /// </summary>
-    /// <param name="newBankAccount">New bank account details.</param>
+    /// <param name="bankAccount">New bank account details.</param>
     /// <returns>New bank account details.</returns>
     [HttpPost]
-    public async Task<IActionResult> AddBankAccountAsync([FromBody] BankAccount newBankAccount)
+    public async Task<IActionResult> AddBankAccountAsync([FromBody] BankAccountViewModel bankAccount)
     {
-        var result = await bankAccountService.AddBankAccountAsync(newBankAccount);
-
-        if (result.IsFailure)
+        var result = await bankAccountService.AddBankAccountAsync(new BankAccount
         {
-            return BadRequest(result.Error);
+            Id = Guid.NewGuid(),
+            AccountName = bankAccount.AccountName,
+            AccountNumber = bankAccount.AccountNumber,
+            BankName = bankAccount.BankName,
+            BranchName = bankAccount.BranchName,
+            BankSwiftCode = bankAccount.BankSwiftCode,
+            BranchAddress = bankAccount.BranchAddress,
+            BranchCode = bankAccount.BranchCode,
+            Currency = bankAccount.Currency,
+            BranchSwiftCode = bankAccount.BranchSwiftCode,
+            IntermediaryBankName = bankAccount.IntermediaryBankName,
+            IntermediaryBankSwiftCode = bankAccount.IntermediaryBankSwiftCode,
+            RoutingNumber = bankAccount.RoutingNumber,
+            StudentId = bankAccount.StudentId
+        });
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.ErrorMessage);
         }
 
-        return CreatedAtAction(nameof(GetBankAccountByIdAsync), new { id = result.Value.Id }, result.Value);
+        var newBankAccount = result.Value;
+        return CreatedAtAction(nameof(GetBankAccountByIdAsync), new { id = bankAccount.BankAccountId }, newBankAccount);
     }
 
     /// <summary>
     /// Update bank account details.
     /// </summary>
-    /// <param name="bankAccountUpdate">Bank account update details.</param>
+    /// <param name="bankAccount">Bank account update details.</param>
     /// <returns>Updated bank account details.</returns>
-    [HttpPut]
-    [ProducesResponseType(typeof(BankAccount), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateBankAccountAsync([FromBody] BankAccount bankAccountUpdate)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateBankAccountAsync([FromQuery] Guid id, [FromBody] BankAccountViewModel bankAccount)
     {
-        var result = await bankAccountService.UpdateBankAccountAsync(bankAccountUpdate);
-
-        if (result.IsFailure)
+        var result = await bankAccountService.UpdateBankAccountAsync(new BankAccount
         {
-            return BadRequest(result.Error);
+            Id = id,
+            AccountName = bankAccount.AccountName,
+            AccountNumber = bankAccount.AccountNumber,
+            BankName = bankAccount.BankName,
+            BranchName = bankAccount.BranchName,
+            BankSwiftCode = bankAccount.BankSwiftCode,
+            BranchAddress = bankAccount.BranchAddress,
+            BranchCode = bankAccount.BranchCode,
+            Currency = bankAccount.Currency,
+            BranchSwiftCode = bankAccount.BranchSwiftCode,
+            IntermediaryBankName = bankAccount.IntermediaryBankName,
+            IntermediaryBankSwiftCode = bankAccount.IntermediaryBankSwiftCode,
+            RoutingNumber = bankAccount.RoutingNumber,
+            StudentId = bankAccount.StudentId
+        });
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.ErrorMessage);
         }
 
-        return Ok(result.Value);
+        return Ok(new BankAccountViewModel
+        {
+            BankAccountId = result.Value?.Id,
+            AccountName = result.Value?.AccountName,
+            AccountNumber = result.Value?.AccountNumber,
+            BankName = result.Value?.BankName,
+            BranchName = result.Value?.BranchName,
+            BankSwiftCode = result.Value?.BankSwiftCode,
+            BranchAddress = result.Value?.BranchAddress,
+            BranchCode = result.Value?.BranchCode,
+            Currency = result.Value?.Currency,
+            BranchSwiftCode = result.Value?.BranchSwiftCode,
+            IntermediaryBankName = result.Value?.IntermediaryBankName,
+            IntermediaryBankSwiftCode = result.Value?.IntermediaryBankSwiftCode,
+            RoutingNumber = result.Value?.RoutingNumber,
+            StudentId = result.Value?.StudentId
+        });
     }
 
     /// <summary>
@@ -61,17 +106,62 @@ public class BankAccountsController : BaseController
     /// <param name="id">Bank account ID.</param>
     /// <returns>Bank account if ID exist, otherwise failure result.</returns>
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(BankAccount), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetBankAccountByIdAsync(Guid id)
     {
         var result = await bankAccountService.GetBankAccountByIdAsync(id);
-
-        if (result.IsFailure)
+        if (!result.IsSuccess)
         {
-            return NotFound(result.Error);
+            return BadRequest(result.ErrorMessage);
         }
 
-        return Ok(result.Value);
+        return Ok(new BankAccountViewModel
+        {
+            BankAccountId = result.Value?.Id,
+            AccountName = result.Value?.AccountName,
+            AccountNumber = result.Value?.AccountNumber,
+            BankName = result.Value?.BankName,
+            BranchName = result.Value?.BranchName,
+            BankSwiftCode = result.Value?.BankSwiftCode,
+            BranchAddress = result.Value?.BranchAddress,
+            BranchCode = result.Value?.BranchCode,
+            Currency = result.Value?.Currency,
+            BranchSwiftCode = result.Value?.BranchSwiftCode,
+            IntermediaryBankName = result.Value?.IntermediaryBankName,
+            IntermediaryBankSwiftCode = result.Value?.IntermediaryBankSwiftCode,
+            RoutingNumber = result.Value?.RoutingNumber,
+            StudentId = result.Value?.StudentId
+        });
+    }
+
+    /// <summary>
+    /// Get bank accounts.
+    /// </summary>
+    /// <returns>Bank accounts.</returns>
+    [HttpGet]
+    public async Task<IActionResult> GetBankAccountsAsync()
+    {
+        var result = await bankAccountService.GetBankAccountsAsync();
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.ErrorMessage);
+        }
+
+        return Ok(result.Value?.Select(bankAccount => new BankAccountViewModel
+        {
+            BankAccountId = bankAccount.Id,
+            AccountName = bankAccount.AccountName,
+            AccountNumber = bankAccount.AccountNumber,
+            BankName = bankAccount.BankName,
+            BranchName = bankAccount.BranchName,
+            BankSwiftCode = bankAccount.BankSwiftCode,
+            BranchAddress = bankAccount.BranchAddress,
+            BranchCode = bankAccount.BranchCode,
+            Currency = bankAccount.Currency,
+            BranchSwiftCode = bankAccount.BranchSwiftCode,
+            IntermediaryBankName = bankAccount.IntermediaryBankName,
+            IntermediaryBankSwiftCode = bankAccount.IntermediaryBankSwiftCode,
+            RoutingNumber = bankAccount.RoutingNumber,
+            StudentId = bankAccount.StudentId
+        }));
     }
 }

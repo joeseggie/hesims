@@ -5,7 +5,7 @@ public record BankAccountViewModel
     /// <summary>
     /// Bank account id.
     /// </summary>
-    public Guid BankAccountId { get; set; }
+    public Guid? BankAccountId { get; set; }
 
     /// <summary>
     /// Bank account name.

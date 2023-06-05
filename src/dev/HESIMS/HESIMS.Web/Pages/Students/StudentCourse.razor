@@ -1,0 +1,21 @@
+@page "/students/{studentId:guid}/course"
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Course</h3>
+<hr class="mb-3" />
+
+@code{
+    [Parameter]
+    public Guid StudentId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var student = await Http.GetFromJsonAsync<Student>($"api/students/{StudentId}");
+        if (student == null)
+        {
+            NavigationManager.NavigateTo("/students");
+        }
+    }
+}
