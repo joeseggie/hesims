@@ -26,7 +26,7 @@ jobs:
       run: dotnet test ./src/dev/HESIMS/HESIMS.sln --configuration Release --no-build --verbosity normal
     
     - name: Publish
-      run: dotnet publish ./src/dev/HESIMS/HESIMS.sln --configuration Release --no-build --no-restore --output ./src/dev/HESIMS/bin/Release/net5.0/publish
+      run: dotnet publish ./src/dev/HESIMS/HESIMS.sln --configuration Release --no-build --no-restore --output ./src/dev/HESIMS/bin/Release/net7.0/publish
     
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3
