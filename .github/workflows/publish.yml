@@ -1,0 +1,35 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore ./src/dev/HESIMS/HESIMS.sln
+
+    - name: Build
+      run: dotnet build ./src/dev/HESIMS/HESIMS.sln --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test ./src/dev/HESIMS/HESIMS.sln --no-build --verbosity normal
+    
+    - name: Publish
+      run: dotnet publish ./src/dev/HESIMS/HESIMS.sln --configuration Release --no-build --no-restore --output ./src/dev/HESIMS/bin/Release/net5.0/publish
+    
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: HESIMS
+        path: ./src/dev/HESIMS/bin/Release/net5.0/publish
