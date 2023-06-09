@@ -11,17 +11,33 @@ public class Student
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Student's application profile Id.
+    /// Student's first name.
     /// </summary>
-    public Guid? ApplicantId { get; set; }
+    public string? FirstName { get; set; }
 
     /// <summary>
-    /// Student's registration number.
+    /// Student's last name.
     /// </summary>
-    public string? StudentNumber { get; set; }
+    public string? LastName { get; set; }
 
     /// <summary>
-    /// Student's address.
+    /// Student's other names.
+    /// </summary>
+    public string? OtherNames { get; set; }
+
+    /// <summary>
+    /// Student's date of birth.
     /// </summary>
     public string? Address { get; set; }
+
+    /// <summary>
+    /// Student's National Identification Number.
+    /// </summary>
+    public string? NIN { get; set; }
+
+    public IEnumerable<BankAccount>? BankAccounts { get; set; }
+
+    public IEnumerable<StudentCourse>? StudentCourses { get; set; }
+
+    public IEnumerable<StudentContact>? StudentContacts { get; set; }
 }

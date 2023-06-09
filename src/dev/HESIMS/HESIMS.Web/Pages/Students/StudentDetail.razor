@@ -1,0 +1,73 @@
+@page "/students/{id:guid}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>HESIMS - Student Profile</PageTitle>
+
+<h3>Student Profile</h3>
+<hr />
+
+@if (student != null)
+{
+
+    <div class="btn-group mb-3">
+        <NavLink 
+                href="students" 
+                class="btn btn-outline-primary btn-sm"
+                aria-current="page">Students List</NavLink>
+    </div>
+
+    <div class="card bg-light">
+        <div class="card-body">
+            <form>
+                <input type="hidden" @bind="student.Id" />
+                <div class="row">
+                    <div class="form-group mb-3 col-6">
+                        <label>First name</label>
+                        <input @bind="student.FirstName" class="form-control" placeholder="First name">
+                    </div>
+                    <div class="form-group mb-3 col-6">
+                        <label>Last name</label>
+                        <input @bind="student.LastName" class="form-control" placeholder="Last name">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group mb-3 col-6">
+                        <label>Other names</label>
+                        <input @bind="student.OtherNames" class="form-control" placeholder="Other names">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group mb-3 col-6">
+                        <label>Address</label>
+                        <input @bind="student.Address" class="form-control" placeholder="Address">
+                    </div>
+                    <div class="form-group mb-3 col-6">
+                        <label>NIN</label>
+                        <input @bind="student.NIN" class="form-control" placeholder="National Identification Number (NIN)">
+                    </div>
+                </div>
+                <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    private StudentViewModel? student = new();
+    protected override async Task OnInitializedAsync()
+    {
+        student = await Http.GetFromJsonAsync<StudentViewModel>($"{NavigationManager.BaseUri}api/students/{Id}");
+    }
+
+    async Task Submit()
+    {
+        if (student != null)
+        {
+            await Http.PutAsJsonAsync<StudentViewModel>($"{NavigationManager.BaseUri}api/students/{Id}", student);
+            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}students/{Id}", true);
+        }
+    }
+}

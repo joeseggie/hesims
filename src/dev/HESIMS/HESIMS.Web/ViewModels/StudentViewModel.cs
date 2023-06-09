@@ -5,20 +5,52 @@ namespace HESIMS.Web.ViewModels;
 /// </summary>
 public record StudentViewModel
 {
-    public Guid? StudentId { get; set; }
+    /// <summary>
+    /// Student's Id.
+    /// </summary>
+    public Guid Id { get; set; }
 
-    public Guid? ApplicantId { get; set; }
+    /// <summary>
+    /// Student's first name.
+    /// </summary>
+    public string? FirstName { get; set; }
 
-    public string? StudentNumber { get; set; }
+    /// <summary>
+    /// Student's last name.
+    /// </summary>
+    public string? LastName { get; set; }
 
+    /// <summary>
+    /// Student's other names.
+    /// </summary>
+    public string? OtherNames { get; set; }
+
+    /// <summary>
+    /// Student's date of birth.
+    /// </summary>
     public string? Address { get; set; }
 
     /// <summary>
-    /// Validates the student view model.
+    /// Student's National Identification Number.
     /// </summary>
-    /// <param name="studentId">Student Id.</param>
-    /// <param name="validateId">Whether to validate the Id.</param>
-    public Result<bool> Validate(Guid? routeId = null, bool validateId = false)
+    public string? NIN { get; set; }
+
+    /// <summary>
+    /// Student's bank accounts.
+    /// </summary>
+    public IEnumerable<BankAccountViewModel>? BankAccounts { get; set; }
+
+    /// <summary>
+    /// Student's courses.
+    /// </summary>
+    public IEnumerable<StudentCourseViewModel>? StudentCourses { get; set; }
+
+    /// <summary>
+    /// Student's contacts.
+    /// </summary>
+    public IEnumerable<StudentContactViewModel>? StudentContacts { get; set; }
+
+    public Result<bool> Validate()
     {
         return Result<bool>.Success(true);
     }

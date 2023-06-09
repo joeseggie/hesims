@@ -1,0 +1,64 @@
+@page "/students"
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>HESIMS - Students</PageTitle>
+
+<h3>Students</h3>
+<hr class="mb-3" />
+
+<AddStudent OnStudentSubmit="AddStudentAsync" />
+
+@if (students == null)
+{
+    <p><em>Add student...</em></p>
+}
+else
+{
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>OtherNames</th>
+                <th>NIN</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in students)
+            {
+                <tr>
+                    <td>
+                        <NavLink href="@($"students/{student.Id}")">@student.FirstName</NavLink>
+                    </td>
+                    <td>
+                        <NavLink href="@($"students/{student.Id}")">@student.LastName</NavLink>
+                    </td>
+                    <td>@student.OtherNames</td>
+                    <td>@student.NIN</td>
+                    <td>@student.Address</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code{
+    private List<StudentViewModel>? students = new ();
+
+    protected override async Task OnInitializedAsync()
+    {
+        students = await Http.GetFromJsonAsync<List<StudentViewModel>>($"{NavigationManager.BaseUri}api/students");
+    }
+
+    private async Task AddStudentAsync(StudentViewModel student)
+    {
+        var response = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}api/students", student);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/students", true);
+        }
+    }
+}

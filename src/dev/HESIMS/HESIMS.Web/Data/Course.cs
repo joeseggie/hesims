@@ -39,4 +39,9 @@ public class Course
     /// Institution offering the course.
     /// </summary>
     public Institution? Institution { get; set; }
+
+    /// <summary>
+    /// Student courses.
+    /// </summary>
+    public IEnumerable<StudentCourse>? StudentCourses { get; set; }
 }

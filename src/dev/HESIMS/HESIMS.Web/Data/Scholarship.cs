@@ -24,4 +24,6 @@ public class Scholarship
     /// Country offering the scholarship.
     /// </summary>
     public Country? Country { get; set; }
+
+    public IEnumerable<StudentCourse>? StudentCourses { get; set; }
 }
