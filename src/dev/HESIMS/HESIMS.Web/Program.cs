@@ -1,7 +1,8 @@
+
+using HESIMS.Web;
 /// <summary>
 /// App start up and configuration.
 /// </summary>
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,22 +11,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddHttpClient();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-builder.Services.AddScoped<ICourseService, CourseService>();
-builder.Services.AddScoped<IScholarshipService, ScholarshipService>();
-builder.Services.AddScoped<ICountryService, CountryService>();
-builder.Services.AddScoped<IInstitutionService, InstitutionService>();
-builder.Services.AddScoped<ICourseLevelService, CourseLevelService>();
-builder.Services.AddScoped<IStudentService, StudentService>();
-builder.Services.AddScoped<IBankAccountService, BankAccountService>();
-builder.Services.AddScoped<IStudentContactService, StudentContactService>();
-builder.Services.AddScoped<IStudentCourseService, StudentCourseService>();
-builder.Services.AddScoped<ICourseRegistrationService, CourseRegistrationService>();
+builder.RegisterAppServices();
 
 var app = builder.Build();
 
@@ -55,5 +50,7 @@ app.MapFallbackToPage("/_Host");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.InitializeDatabase();
 
 app.Run();
