@@ -104,11 +104,12 @@ public class BankAccountsController : BaseController
     /// Get bank account by Id.
     /// </summary>
     /// <param name="id">Bank account ID.</param>
+    /// <param name="studentId">Filter bank accounts by student ID.</param>
     /// <returns>Bank account if ID exist, otherwise failure result.</returns>
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetBankAccountByIdAsync(Guid id)
+    public async Task<IActionResult> GetBankAccountByIdAsync(Guid id, [FromQuery] Guid? studentId = null)
     {
-        var result = await bankAccountService.GetBankAccountByIdAsync(id);
+        var result = await bankAccountService.GetBankAccountByIdAsync(id, studentId);
         if (!result.IsSuccess)
         {
             return BadRequest(result.ErrorMessage);
@@ -136,11 +137,12 @@ public class BankAccountsController : BaseController
     /// <summary>
     /// Get bank accounts.
     /// </summary>
+    /// <param name="studentId">Filter bank accounts by student ID.</param>
     /// <returns>Bank accounts.</returns>
     [HttpGet]
-    public async Task<IActionResult> GetBankAccountsAsync()
+    public async Task<IActionResult> GetBankAccountsAsync([FromQuery] Guid? studentId = null)
     {
-        var result = await bankAccountService.GetBankAccountsAsync();
+        var result = await bankAccountService.GetBankAccountsAsync(studentId);
         if (!result.IsSuccess)
         {
             return BadRequest(result.ErrorMessage);

@@ -1,0 +1,54 @@
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h6>Bank Accounts</h6>
+<hr class="mb-2" />
+
+<div class="btn-group mb-1" role="group" aria-label="Basic example">
+    <a href="@($"students/{StudentId}/bankaccounts/add")" class="btn btn-outline-secondary btn-sm">Add Bank Account</a>
+</div>
+
+@if (bankAccounts == null || bankAccounts.Count < 1)
+{
+    <p class="h5 pt-3"><em>No bank account has been added for student.</em></p>
+}
+else
+{
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th>Bank</th>
+                <th>Account Name</th>
+                <th>Account Number</th>
+                <th>Currency</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var bankAccount in bankAccounts)
+            {
+                <tr>
+                    <td>@bankAccount.BankName</td>
+                    <td>@bankAccount.AccountName</td>
+                    <td>@bankAccount.AccountNumber</td>
+                    <td>@bankAccount.Currency</td>
+                    <td>
+                        <NavLink href="@($"students/{StudentId}/bankaccounts/{bankAccount.BankAccountId}")" class="btn btn-primary btn-sm">Edit</NavLink>
+                        <a href="" class="btn btn-secondary btn-sm">Close</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter] public Guid StudentId { get; set; }
+
+    private List<BankAccountViewModel>? bankAccounts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        bankAccounts = await Http.GetFromJsonAsync<List<BankAccountViewModel>>($"{NavigationManager.BaseUri}api/bankaccounts?studentId={StudentId}");
+    }
+}
