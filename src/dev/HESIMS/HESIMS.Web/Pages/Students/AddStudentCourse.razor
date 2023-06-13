@@ -1,0 +1,11 @@
+@page "/students/{StudentId:guid}/courses/add"
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Register Student Course</h3>
+<hr />
+
+@code {
+    [Parameter] public Guid StudentId { get; set; }
+}

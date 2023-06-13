@@ -1,21 +1,9 @@
-@page "/students/{studentId:guid}/course"
+<h6 class="pt-3">Course</h6>
+<hr class="mb-2" />
+<NavLink href="@($"students/{StudentId}/courses/add")" class="btn btn-outline-secondary btn-sm">Add Course</NavLink>
 
-@inject HttpClient Http
-@inject NavigationManager NavigationManager
-
-<h3>Course</h3>
-<hr class="mb-3" />
+<p class="h5 pb-5 pt-2"><em>No course has been registered for student</em></p>
 
 @code{
-    [Parameter]
-    public Guid StudentId { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var student = await Http.GetFromJsonAsync<Student>($"api/students/{StudentId}");
-        if (student == null)
-        {
-            NavigationManager.NavigateTo("/students");
-        }
-    }
+    [Parameter] public Guid StudentId { get; set; }
 }
