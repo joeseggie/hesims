@@ -9,11 +9,8 @@
 
 @if (student != null)
 {
-
-    <div class="btn-group mb-3">
-        <NavLink href="students" class="btn btn-outline-primary btn-sm" aria-current="page">Students List</NavLink>
-    </div>
-
+    <NavLink href="students" class="btn btn-outline-primary btn-sm" aria-current="page">Students List</NavLink>
+    <br /><br />
     <div class="card bg-light pb-2">
         <div class="card-body">
             <form>
@@ -52,6 +49,8 @@
     <StudentCourse StudentId="@StudentId" />
 
     <BankAccountsList StudentId="@StudentId" />
+
+    <br /><br /><br /><br />
 }
 
 @code {

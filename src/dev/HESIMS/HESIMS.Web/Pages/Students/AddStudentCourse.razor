@@ -4,7 +4,47 @@
 @inject NavigationManager NavigationManager
 
 <h3>Register Student Course</h3>
-<hr />
+<hr class="mb-3" />
+
+<div class="card bg-light">
+    <div class="card-body">
+        <form>
+            <div class="form-group pb-3">
+                <label>Country</label>
+                <select class="form-select">
+                    <option value="">Select country</option>
+                </select>
+            </div>
+            <div class="form-group pb-3">
+                <label>Scholarship</label>
+                <select class="form-select">
+                    <option value="">Select scholarship</option>
+                </select>
+            </div>
+            <div class="form-group pb-3">
+                <label>Institution</label>
+                <select class="form-select">
+                    <option value="">Select institution</option>
+                </select>
+            </div>
+            <div class="form-group pb-3">
+                <label>Course</label>
+                <select class="form-select">
+                    <option value="">Select course</option>
+                </select>
+            </div>
+            <div class="form-group pb-3">
+                <label>Entry Year</label>
+                <input class="form-control" placeholder="Entry year">
+            </div>
+            <div class="form-group pb-3">
+                <label>Institution Registration Number</label>
+                <input class="form-control" placeholder="Registration number issued on admission">
+            </div>
+            <button class="btn btn-danger btn-sm" type="submit">Register Course</button>
+        </form>
+    </div>
+</div>
 
 @code {
     [Parameter] public Guid StudentId { get; set; }
