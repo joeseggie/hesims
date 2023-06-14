@@ -1,0 +1,147 @@
+﻿@page "/students/{StudentId:guid}/bankaccounts/add"
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Add Bank Account</h3>
+<hr class="mb-2" />
+
+@if (student != null)
+{
+    <div class="card bg-info mb-1 text-dark">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-2 text-end">
+                    <label class="col-form-label col-form-label-lg">Student Name:</label>
+                </div>
+                <div class="col-auto">
+                    <label class="col-form-label col-form-label-lg">@student.FirstName @student.LastName
+                        @student.OtherNames</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2 text-end">
+                    <label class="col-form-label">Address:</label>
+                </div>
+                <div class="col-auto">
+                    <label class="col-form-label">@student.Address</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card bg-light mb-5">
+        <div class="card-body">
+            <form>
+                <input type="hidden" @bind="@bankAccount.StudentId" />
+                <div class="row mb-4">
+                    <strong>Account</strong>
+                    <hr class="mb-0" />
+                </div>
+                <div class="row mb-4">
+                    <div class="form-group col-6">
+                        <label>Account Name</label>
+                        <input @bind="@bankAccount.AccountName" class="form-control" placeholder="Account Name" />
+                    </div>
+                    <div class="form-group col-6">
+                        <label>Account Number</label>
+                        <input @bind="@bankAccount.AccountNumber" class="form-control" placeholder="Account Number" />
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="form-group col-6">
+                        <label>Currency</label>
+                        <input @bind="@bankAccount.Currency" class="form-control" placeholder="Currency" />
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <strong>Bank</strong>
+                    <hr class="mb-0" />
+                </div>
+                <div class="row mb-4">
+                    <div class="form-group col-12">
+                        <label>Bank Name</label>
+                        <input @bind="@bankAccount.BankName" class="form-control" placeholder="Bank Name" />
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="form-group col-6">
+                        <label>Bank Swift Code</label>
+                        <input @bind="@bankAccount.BankSwiftCode" class="form-control" placeholder="Bank Swift Code" />
+                    </div>
+                    <div class="form-group col-6">
+                        <label>Routing Number</label>
+                        <input @bind="@bankAccount.RoutingNumber" class="form-control" placeholder="Routing Number" />
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <strong>Bank Branch</strong>
+                    <hr class="mb-0" />
+                </div>
+                <div class="row mb-4">
+                    <div class="form-group col-12">
+                        <label>Branch Name</label>
+                        <input @bind="@bankAccount.BranchName" class="form-control" placeholder="Branch Name" />
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="form-group col-12">
+                        <label>Branch Address</label>
+                        <input @bind="@bankAccount.BranchAddress" class="form-control" placeholder="Branch Address" />
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="form-group col-6">
+                        <label>Branch Code</label>
+                        <input @bind="@bankAccount.BranchCode" class="form-control" placeholder="Branch Code" />
+                    </div>
+                    <div class="form-group col-6">
+                        <label>Branch Swift Code</label>
+                        <input @bind="@bankAccount.BranchSwiftCode" class="form-control" placeholder="Branch Swift Code" />
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <strong>Intermediary Bank</strong>
+                    <hr class="mb-0" />
+                </div>
+                <div class="row mb-4">
+                    <div class="form-group col-6">
+                        <label>Intermediary Bank Name</label>
+                        <input @bind="@bankAccount.IntermediaryBankName" class="form-control" placeholder="Intermediary Bank Name" />
+                    </div>
+                    <div class="form-group col-6">
+                        <label>Intermediary Bank Swift Code</label>
+                        <input @bind="@bankAccount.IntermediaryBankSwiftCode" class="form-control" placeholder="Intermediary Bank Swift Code" />
+                    </div>
+                </div>
+                <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Save Changes</button>
+                <NavLink href="@($"students/{bankAccount.StudentId}")" class="btn btn-primary btn-sm">Cancel</NavLink>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <p class="lead"><em>Student details not found...</em></p>
+}
+
+@code {
+    [Parameter] public Guid StudentId { get; set; }
+
+    private StudentViewModel? student = new();
+    private BankAccountViewModel bankAccount = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        bankAccount.StudentId = StudentId;
+        student = await Http.GetFromJsonAsync<StudentViewModel>($"{NavigationManager.BaseUri}api/students/{StudentId}");
+    }
+
+    private async Task Submit()
+    {
+        var response = await Http.PostAsJsonAsync($"{NavigationManager.BaseUri}api/bankaccounts", bankAccount);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}students/{bankAccount.StudentId}", true);
+        }
+    }
+}

@@ -20,14 +20,16 @@ public interface IBankAccountService
     /// Get bank account by Id.
     /// </summary>
     /// <param name="id">Bank account ID.</param>
+    /// <param name="studentId">Filter bank account by student ID.</param>
     /// <returns>Bank account if ID exist, otherwise failure result.</returns>
-    Task<Result<BankAccount>> GetBankAccountByIdAsync(Guid id);
+    Task<Result<BankAccount>> GetBankAccountByIdAsync(Guid id, Guid? studentId = null);
 
     /// <summary>
     /// Get all bank accounts.
     /// </summary>
+    /// <param name="studentId">Filter bank accounts list by student ID.</param>
     /// <returns>List of bank accounts.</returns>
-    Task<Result<IEnumerable<BankAccount>>> GetBankAccountsAsync();
+    Task<Result<IEnumerable<BankAccount>>> GetBankAccountsAsync(Guid? studentId = null);
 }
 
 /// <summary>
@@ -70,21 +72,32 @@ public class BankAccountService : IBankAccountService
     }
 
     /// <inheritdoc/>
-    public async Task<Result<BankAccount>> GetBankAccountByIdAsync(Guid id)
+    public async Task<Result<BankAccount>> GetBankAccountByIdAsync(Guid id, Guid? studentId = null)
     {
-        var bankAccount = await db.BankAccounts.FindAsync(id);
+        var bankAccountQuery = db.BankAccounts.AsQueryable();
+        if (studentId.HasValue)
+        {
+            bankAccountQuery = bankAccountQuery.Where(bankAccount => bankAccount.StudentId == studentId.Value);
+        }
+
+        var bankAccount = await bankAccountQuery.FirstOrDefaultAsync(bankAccount => bankAccount.Id == id);
         if (bankAccount == null)
         {
-            return Result<BankAccount>.Failure($"Bank account with ID {id} not found.");
+            return Result<BankAccount>.Failure($"Bank account with ID {id} for student {studentId} was not found.");
         }
 
         return Result<BankAccount>.Success(bankAccount);
     }
 
     /// <inheritdoc/>
-    public async Task<Result<IEnumerable<BankAccount>>> GetBankAccountsAsync()
+    public async Task<Result<IEnumerable<BankAccount>>> GetBankAccountsAsync(Guid? studentId = null)
     {
-        var bankAccounts = await db.BankAccounts.ToListAsync();
-        return Result<IEnumerable<BankAccount>>.Success(bankAccounts);
+        var bankAccounts = db.BankAccounts.AsQueryable();
+        if (studentId.HasValue)
+        {
+            bankAccounts = bankAccounts.Where(bankAccount => bankAccount.StudentId == studentId.Value);
+        }
+
+        return Result<IEnumerable<BankAccount>>.Success(await bankAccounts.ToListAsync());
     }
 }

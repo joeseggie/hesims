@@ -1,4 +1,4 @@
-@page "/students/{id:guid}"
+@page "/students/{StudentId:guid}"
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
@@ -11,13 +11,10 @@
 {
 
     <div class="btn-group mb-3">
-        <NavLink 
-                href="students" 
-                class="btn btn-outline-primary btn-sm"
-                aria-current="page">Students List</NavLink>
+        <NavLink href="students" class="btn btn-outline-primary btn-sm" aria-current="page">Students List</NavLink>
     </div>
 
-    <div class="card bg-light">
+    <div class="card bg-light pb-2">
         <div class="card-body">
             <form>
                 <input type="hidden" @bind="student.Id" />
@@ -51,23 +48,28 @@
             </form>
         </div>
     </div>
+
+    <StudentCourse StudentId="@StudentId" />
+
+    <BankAccountsList StudentId="@StudentId" />
 }
 
 @code {
-    [Parameter] public Guid Id { get; set; }
+    [Parameter] public Guid StudentId { get; set; }
 
     private StudentViewModel? student = new();
+
     protected override async Task OnInitializedAsync()
     {
-        student = await Http.GetFromJsonAsync<StudentViewModel>($"{NavigationManager.BaseUri}api/students/{Id}");
+        student = await Http.GetFromJsonAsync<StudentViewModel>($"{NavigationManager.BaseUri}api/students/{StudentId}");
     }
 
     async Task Submit()
     {
         if (student != null)
         {
-            await Http.PutAsJsonAsync<StudentViewModel>($"{NavigationManager.BaseUri}api/students/{Id}", student);
-            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}students/{Id}", true);
+            await Http.PutAsJsonAsync<StudentViewModel>($"{NavigationManager.BaseUri}api/students/{StudentId}", student);
+            NavigationManager.NavigateTo($"{NavigationManager.BaseUri}students/{StudentId}", true);
         }
     }
 }
