@@ -33,3 +33,9 @@ jobs:
       with:
         name: HESIMS
         path: ./src/dev/HESIMS/HESIMS.Web/bin/Release/net7.0/publish
+    
+    - name: Upload Release Asset
+      uses: djn24/add-asset-to-release@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: './src/dev/HESIMS/HESIMS.Web/bin/Release/net7.0/publish'
