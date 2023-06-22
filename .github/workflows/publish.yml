@@ -34,14 +34,9 @@ jobs:
         name: HESIMS
         path: ./src/dev/HESIMS/HESIMS.Web/bin/Release/net7.0/publish
     
-    - name: Create release package
-      uses: softprops/action-gh-release@v1
+    - name: Zip and upload release package
+      uses: thedoctor0/zip-release@0.7.1
       with:
-        files: ./src/dev/HESIMS/HESIMS.Web/bin/Release/net7.0/publish/*
-        tag_name: ${{ github.ref }}
-        body: |
-          ## Changes
-          ${{ github.event.release.body }}
-        draft: false
-        prerelease: false
-        token: ${{ secrets.GITHUB_TOKEN }}
+        type: 'zip'
+        filename: 'HESIMS.zip'
+        path: './src/dev/HESIMS/HESIMS.Web/bin/Release/net7.0/publish'
