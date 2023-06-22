@@ -19,16 +19,16 @@ public class ScholarshipController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetScholarshipsAsync()
+    public async Task<IActionResult> GetScholarshipsAsync([FromQuery] Guid? countryId = null)
     {
-        var scholarshipsQueryResult = await scholarshipService.GetScholarshipsAsync();
+        var scholarshipsQueryResult = await scholarshipService.GetScholarshipsAsync(countryId);
         if (!scholarshipsQueryResult.IsSuccess)
         {
             return BadRequest(scholarshipsQueryResult.ErrorMessage);
         }
 
         var scholarships = scholarshipsQueryResult.Value;
-        if (scholarships != null && scholarships.Count() > 0)
+        if (scholarships != null && scholarships.Any())
         {
             return Ok(scholarships.Select(scholarship => new ScholarshipViewModel
             {
@@ -96,8 +96,7 @@ public class ScholarshipController : BaseController
         }
         catch (DbUpdateException error)
         {
-            var sqlException = error.InnerException as SqlException;
-            if (sqlException != null && (sqlException.Number == 2601 || sqlException.Number == 2627))
+            if (error.InnerException is SqlException sqlException && (sqlException.Number == 2601 || sqlException.Number == 2627))
             {
                 return BadRequest("Scholarship already exists.");
             }

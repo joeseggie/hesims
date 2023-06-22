@@ -5,7 +5,7 @@ public record StudentCourseViewModel
     /// <summary>
     /// Student course Id.
     /// </summary>
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
 
     /// <summary>
     /// Student Id.
@@ -33,11 +33,6 @@ public record StudentCourseViewModel
     public string? CompletionYear { get; set; }
 
     /// <summary>
-    /// Student identification number.
-    /// </summary>
-    public string? StudentNumber { get; set; }
-
-    /// <summary>
     /// Institution's registration number for the student on the course.
     /// </summary>
     public string? CourseRegistrationNumber { get; set; }
@@ -45,15 +40,20 @@ public record StudentCourseViewModel
     /// <summary>
     /// Student.
     /// </summary>
-    public Student? Student { get; set; }
+    public StudentViewModel? Student { get; set; }
 
     /// <summary>
     /// Course.
     /// </summary>
-    public Course? Course { get; set; }
+    public CourseViewModel? Course { get; set; }
 
     /// <summary>
-    /// Scholarship.
+    /// Scholar?ship.
     /// </summary>
-    public Scholarship? Scholarship { get; set; }
+    public ScholarshipViewModel? Scholarship { get; set; }
+
+    public Result<bool> Validate()
+    {
+        return Result<bool>.Success(true);
+    }
 }

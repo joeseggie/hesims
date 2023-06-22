@@ -11,33 +11,101 @@ public class StudentCoursesController : BaseController
         this.studentCourseService = studentCourseService;
     }
 
-    [HttpGet("{studentid:guid}")]
-    public async Task<IActionResult> GetStudentCoursesByStudentIdAsync(Guid studentid)
+    [HttpPost]
+    public async Task<IActionResult> CreateStudentCourse(StudentCourseViewModel studentCourse)
     {
-        var result = await studentCourseService.GetStudentCoursesAsync();
-        if (!result.IsSuccess)
+        var validationResult = studentCourse.Validate();
+        if (!validationResult.IsSuccess)
+        {
+            return BadRequest(validationResult.ErrorMessage);
+        }
+
+        var result = await studentCourseService.AddStudentCourseAsync(new StudentCourse
+        {
+            Id = Guid.NewGuid(),
+            StudentId = studentCourse.StudentId,
+            CourseId = studentCourse.CourseId,
+            ScholarshipId = studentCourse.ScholarshipId,
+            EntryYear = studentCourse.EntryYear,
+            CompletionYear = studentCourse.CompletionYear,
+            CourseRegistrationNumber = studentCourse.CourseRegistrationNumber
+        });
+        
+        if (!result.IsSuccess && result.Value is not null)
         {
             return BadRequest(result.ErrorMessage);
         }
 
+        var newStudentCourse = result.Value;
+        return CreatedAtAction(nameof(GetStudentCourseByIdAsync), new { id = studentCourse.Id }, newStudentCourse);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetStudentCourseByIdAsync(Guid id)
+    {
+        var result = await studentCourseService.GetStudentCourseByIdAsync(id);
+        if (!result.IsSuccess)
+        {
+            return NotFound(result.ErrorMessage);
+        }
+
+        var newStudentCourse = result.Value;
+        return Ok(new StudentCourseViewModel
+        {
+            Id = newStudentCourse?.Id,
+            CourseId = newStudentCourse?.CourseId,
+            ScholarshipId = newStudentCourse?.ScholarshipId,
+            StudentId = newStudentCourse?.StudentId,
+            EntryYear = newStudentCourse?.EntryYear,
+            CompletionYear = newStudentCourse?.CompletionYear,
+            CourseRegistrationNumber = newStudentCourse?.CourseRegistrationNumber
+        });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetStudentCourses([FromQuery] Guid? studentId = null)
+    {
+        var result = await studentCourseService.GetStudentCoursesAsync(studentId);
+        if (!result.IsSuccess)
+        {
+            return NotFound(result.ErrorMessage);
+        }
+
         var studentCourses = result.Value;
-        if (studentCourses != null && studentCourses.Count() > 0)
+        if (studentCourses is null || !studentCourses.Any())
         {
-            var firstStudentCourse = studentCourses.FirstOrDefault(studentCourse => studentCourse.StudentId == studentid);
-            return Ok(new StudentCourseViewModel
-            {
-                StudentId = firstStudentCourse?.StudentId,
-                CourseId = firstStudentCourse?.CourseId,
-                CompletionYear = firstStudentCourse?.CompletionYear,
-            });
+            return Ok(studentCourses);
         }
-        else
+
+        return Ok(studentCourses.Select(studentCourse => new StudentCourseViewModel
         {
-            return Ok(new StudentCourseViewModel
-            {
-                StudentId = studentid,
-                CourseId = Guid.Empty,
-            });
-        }
+            Id = studentCourse.Id,
+            CourseId = studentCourse.CourseId,
+            ScholarshipId = studentCourse.ScholarshipId,
+            StudentId = studentCourse.StudentId,
+            EntryYear = studentCourse.EntryYear,
+            CompletionYear = studentCourse.CompletionYear,
+            CourseRegistrationNumber = studentCourse.CourseRegistrationNumber,
+            Course = new CourseViewModel{
+                CourseId = studentCourse.Course?.Id,
+                CourseLevelId = studentCourse.Course?.CourseLevelId,
+                CourseName = studentCourse.Course?.Name,
+                InstitutionId = studentCourse.Course?.InstitutionId,
+                Duration = studentCourse.Course?.Duration,
+                Institution = new InstitutionViewModel{
+                    InstitutionId = studentCourse.Course?.Institution?.Id,
+                    InstitutionName = studentCourse.Course?.Institution?.Name,
+                }
+            },
+            Scholarship = new ScholarshipViewModel{
+                ScholarshipId = studentCourse.Scholarship?.Id,
+                ScholarshipName = studentCourse.Scholarship?.Name,
+                Country = new CountryViewModel{
+                    CountryId = studentCourse.Scholarship?.Country?.Id,
+                    CountryCode = studentCourse.Scholarship?.Country?.Code,
+                    CountryName = studentCourse.Scholarship?.Country?.Name
+                }
+            }
+        }));
     }
 }

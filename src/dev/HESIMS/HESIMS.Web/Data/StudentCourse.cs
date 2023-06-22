@@ -36,11 +36,6 @@ namespace HESIMS.Web.Data
         public string? CompletionYear { get; set; }
 
         /// <summary>
-        /// Student identification number.
-        /// </summary>
-        public string? StudentNumber { get; set; }
-
-        /// <summary>
         /// Institution's registration number for the student on the course.
         /// </summary>
         public string? CourseRegistrationNumber { get; set; }
