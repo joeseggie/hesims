@@ -1,0 +1,3 @@
+GET http://localhost:5224/api/institutions?countryId=54d3d94e-3244-4671-9d80-c63c6a4edfb6 HTTP/1.1
+
+###

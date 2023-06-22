@@ -8,8 +8,9 @@ public interface IScholarshipService
     /// <summary>
     /// Get scholarships.
     /// </summary>
+    /// <param name="countryId">Filter for scholarships in a country.</param>
     /// <returns>List of scholarships</returns>
-    Task<Result<IEnumerable<Scholarship>>> GetScholarshipsAsync();
+    Task<Result<IEnumerable<Scholarship>>> GetScholarshipsAsync(Guid? countryId = null);
 
     /// <summary>
     /// Add scholarship.
@@ -75,12 +76,18 @@ public class ScholarshipService : IScholarshipService
     }
 
     /// <inheritdoc />
-    public async Task<Result<IEnumerable<Scholarship>>> GetScholarshipsAsync()
+    public async Task<Result<IEnumerable<Scholarship>>> GetScholarshipsAsync(Guid? countryId = null)
     {
-        var scholarships = await db.Scholarships
+        var scholarshipsQuery = db.Scholarships.AsQueryable();
+        if (countryId is not null)
+        {
+            scholarshipsQuery = scholarshipsQuery.Where(scholarship => scholarship.CountryId == countryId);
+        }
+        var scholarships = await scholarshipsQuery
                                    .Include(scholarship => scholarship.Country)
                                    .OrderBy(scholarship => scholarship.Name)
                                    .ToListAsync();
+
         return Result<IEnumerable<Scholarship>>.Success(scholarships);
     }
 

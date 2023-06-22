@@ -21,6 +21,7 @@ public class InstitutionsController : BaseController
     /// <summary>
     /// Get institutions.
     /// </summary>
+    /// <param name="countryId">Filter for institutions in country with Id.</param>
     /// <returns>List of institutions.</returns>
     [HttpGet]
     public async Task<IActionResult> GetInstitutionsAsync([FromQuery] Guid? countryId = null)

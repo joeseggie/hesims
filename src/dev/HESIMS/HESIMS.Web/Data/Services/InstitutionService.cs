@@ -28,6 +28,7 @@ public interface IInstitutionService
     /// Get institutions.
     /// </summary>
     /// <param name="countryId">Country ID.</param>
+    /// <param name="countryId">Filter for institutions in a country.</param>
     /// <returns>List of institutions.</returns>
     Task<Result<IEnumerable<Institution>>> GetInstitutionsAsync(Guid? countryId = null);
 }

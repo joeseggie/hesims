@@ -27,10 +27,11 @@ public interface IStudentCourseService
     Task<Result<StudentCourse>> GetStudentCourseByIdAsync(Guid id);
 
     /// <summary>
-    /// Get all student courses.
+    /// Get student courses by student ID.
     /// </summary>
-    /// <returns>List of student courses.</returns>
-    Task<Result<IEnumerable<StudentCourse>>> GetStudentCoursesAsync();
+    /// <param name="studentId">ID of the student to filter courses to be returned.</param>
+    /// <returns>List of courses registered to students.</returns>
+    Task<Result<IEnumerable<StudentCourse>>> GetStudentCoursesAsync(Guid? studentId);
 }
 
 /// <summary>
@@ -84,9 +85,27 @@ public class StudentCourseService : IStudentCourseService
     }
 
     /// <inheritdoc/>
-    public async Task<Result<IEnumerable<StudentCourse>>> GetStudentCoursesAsync()
+    public async Task<Result<IEnumerable<StudentCourse>>> GetStudentCoursesAsync(Guid? studentId = null)
     {
-        var studentCourses = await db.StudentCourses.ToListAsync();
+        var studentCoursesQuery = db.StudentCourses
+                               .Include(studentCourse => studentCourse.Course)
+                               .ThenInclude(course => course!.Institution)
+                               .Include(studentCourse => studentCourse.Scholarship)
+                               .ThenInclude(scholarship => scholarship!.Country)
+                               .AsQueryable();
+        
+        if (!studentCoursesQuery.Any())
+        {
+            return Result<IEnumerable<StudentCourse>>.Failure("No student courses found.");
+        }
+
+        if (studentId is not null)
+        {
+            studentCoursesQuery = studentCoursesQuery.Where(studentCourse => studentCourse.StudentId == studentId);
+        }
+
+        var studentCourses = await studentCoursesQuery.ToListAsync();
+
         return Result<IEnumerable<StudentCourse>>.Success(studentCourses);
     }
 }

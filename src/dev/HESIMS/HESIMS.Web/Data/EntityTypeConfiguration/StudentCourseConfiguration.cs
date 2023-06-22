@@ -13,7 +13,6 @@ public class StudentCourseConfiguration : IEntityTypeConfiguration<StudentCourse
         builder.HasKey(studentCourse => studentCourse.Id);
 
         builder.Property(studentCourse => studentCourse.EntryYear).IsRequired();
-        builder.Property(studentCourse => studentCourse.CourseRegistrationNumber).IsRequired();
 
         builder.HasOne(studentCourse => studentCourse.Student)
             .WithMany(student => student.StudentCourses)
