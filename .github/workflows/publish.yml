@@ -33,13 +33,3 @@ jobs:
       with:
         name: HESIMS
         path: ./src/dev/HESIMS/HESIMS.Web/bin/Release/net7.0/publish
-    
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./src/dev/HESIMS/HESIMS.Web/bin/Release/net7.0/publish
-        asset_name: HESIMS
-        asset_content_type: application/zip
