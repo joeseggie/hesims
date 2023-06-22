@@ -33,7 +33,7 @@ jobs:
       with:
         name: HESIMS
         path: ./src/dev/HESIMS/HESIMS.Web/bin/Release/net7.0/publish
-    
+
     - name: Zip and upload release package
       uses: thedoctor0/zip-release@0.7.1
       with:
