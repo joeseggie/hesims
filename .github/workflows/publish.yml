@@ -35,7 +35,11 @@ jobs:
         path: ./src/dev/HESIMS/HESIMS.Web/bin/Release/net7.0/publish
     
     - name: Upload Release Asset
-      uses: djn24/add-asset-to-release@v1
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        path: './src/dev/HESIMS/HESIMS.Web/bin/Release/net7.0/publish'
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./src/dev/HESIMS/HESIMS.Web/bin/Release/net7.0/publish
+        asset_name: HESIMS
+        asset_content_type: application/zip
