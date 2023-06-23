@@ -93,13 +93,8 @@ public class StudentCourseService : IStudentCourseService
                                .Include(studentCourse => studentCourse.Scholarship)
                                .ThenInclude(scholarship => scholarship!.Country)
                                .AsQueryable();
-        
-        if (!studentCoursesQuery.Any())
-        {
-            return Result<IEnumerable<StudentCourse>>.Failure("No student courses found.");
-        }
 
-        if (studentId is not null)
+        if (studentCoursesQuery.Any() && studentId is not null)
         {
             studentCoursesQuery = studentCoursesQuery.Where(studentCourse => studentCourse.StudentId == studentId);
         }
