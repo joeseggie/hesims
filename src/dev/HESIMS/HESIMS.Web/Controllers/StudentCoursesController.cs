@@ -46,7 +46,7 @@ public class StudentCoursesController : BaseController
         var result = await studentCourseService.GetStudentCourseByIdAsync(id);
         if (!result.IsSuccess)
         {
-            return NotFound(result.ErrorMessage);
+            return BadRequest(result.ErrorMessage);
         }
 
         var newStudentCourse = result.Value;
