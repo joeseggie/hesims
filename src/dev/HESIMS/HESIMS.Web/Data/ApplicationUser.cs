@@ -1,4 +1,4 @@
-﻿namespace HESIMS.Web;
+﻿namespace HESIMS.Web.Data;
 
 public class ApplicationUser : IdentityUser
 {
