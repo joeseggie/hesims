@@ -2,4 +2,11 @@
 
 <PageTitle>Scholarships</PageTitle>
 
-<Scholarships />
+<AuthorizeView>
+    <Authorized>
+        <Scholarships />
+    </Authorized>
+    <NotAuthorized>
+        <p class="lead">You are not authorized to access resource. <a href="/Identity/Account/Login">Login</a> to gain access.</p>
+    </NotAuthorized>
+</AuthorizeView>

@@ -4,41 +4,49 @@
 
 <PageTitle>HESIMS - Courses</PageTitle>
 
-<h3>Offered Courses List</h3>
-<hr />
+<AuthorizeView>
+    <Authorized>
+        <h3>Offered Courses List</h3>
+        <hr />
 
-<div class="btn-group mb-3">
-    <NavLink href="courselevels" class="btn btn-outline-primary btn-sm">Course Levels</NavLink>
-</div>
+        <div class="btn-group mb-3">
+            <NavLink href="courselevels" class="btn btn-outline-primary btn-sm">Course Levels</NavLink>
+        </div>
 
-<AddCourse OnCourseSubmit="AddCourseAsync" />
+        <AddCourse OnCourseSubmit="AddCourseAsync" />
 
-<table class="table table-striped table-sm">
-    <thead>
-        <tr>
-            <th>Course</th>
-            <th>Institution</th>
-            <th>Duration (Years)</th>
-            <th>Course Level</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (courses != null && courses.Count > 0)
-        {
-            foreach (var course in courses)
-            {
+        <table class="table table-striped table-sm">
+            <thead>
                 <tr>
-                    <td>
-                        <NavLink href="@($"courses/{course.CourseId}")">@course.CourseName</NavLink>
-                    </td>
-                    <td>@course.Institution?.InstitutionName</td>
-                    <td>@course.Duration</td>
-                    <td>@course.CourseLevel?.CourseLevelDescription</td>
+                    <th>Course</th>
+                    <th>Institution</th>
+                    <th>Duration (Years)</th>
+                    <th>Course Level</th>
                 </tr>
-            }
-        }
-    </tbody>
-</table>
+            </thead>
+            <tbody>
+                @if (courses != null && courses.Count > 0)
+                {
+                    foreach (var course in courses)
+                    {
+                        <tr>
+                            <td>
+                                <NavLink href="@($"courses/{course.CourseId}")">@course.CourseName</NavLink>
+                            </td>
+                            <td>@course.Institution?.InstitutionName</td>
+                            <td>@course.Duration</td>
+                            <td>@course.CourseLevel?.CourseLevelDescription</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </Authorized>
+    <NotAuthorized>
+        <p class="lead">You are not authorized to access resource. <a href="/Identity/Account/Login">Login</a> to gain
+            access.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
 

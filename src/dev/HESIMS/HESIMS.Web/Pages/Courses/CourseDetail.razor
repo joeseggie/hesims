@@ -4,71 +4,79 @@
 
 <PageTitle>HESIMS - Course Detail</PageTitle>
 
-<h3>Course Detail</h3>
+<AuthorizeView>
+    <Authorized>
+        <h3>Course Detail</h3>
 
-<div class="btn-group">
-    <NavLink href="courses" class="btn btn-primary btn-sm" aria-current="page">Course List</NavLink>
-    <NavLink href="courses/new" class="btn btn-primary btn-sm" aria-current="page">Add Course</NavLink>
-</div>
-<br />
-<br />
+        <div class="btn-group">
+            <NavLink href="courses" class="btn btn-primary btn-sm" aria-current="page">Course List</NavLink>
+            <NavLink href="courses/new" class="btn btn-primary btn-sm" aria-current="page">Add Course</NavLink>
+        </div>
+        <br />
+        <br />
 
-@if (course != null)
-{
-    <div class="col-8">
-        <form>
-            <input type="hidden" @bind="course.CourseId" />
-            <div class="form-group mb-3">
-                <label>Course Name</label>
-                <input @bind="course.CourseName" class="form-control" placeholder="Course name">
+        @if (course != null)
+        {
+            <div class="col-8">
+                <form>
+                    <input type="hidden" @bind="course.CourseId" />
+                    <div class="form-group mb-3">
+                        <label>Course Name</label>
+                        <input @bind="course.CourseName" class="form-control" placeholder="Course name">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Country</label>
+                        <select class="form-select" @bind="countryId">
+                            <option value="">Select country</option>
+                            @if (countries != null)
+                            {
+                                @foreach (var country in countries)
+                                {
+                                    <option value="@country.CountryId">@country.CountryName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Institution</label>
+                        <select @bind="course.InstitutionId" class="form-select">
+                            <option selected>Select institution</option>
+                            @if (institutions != null)
+                            {
+                                @foreach (var institution in institutions)
+                                {
+                                    <option value="@institution.InstitutionId">@institution.InstitutionName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Duration</label>
+                        <input @bind="course.Duration" type="number" class="form-control" placeholder="Course duration">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Course Level</label>
+                        <select @bind="course.CourseLevelId" class="form-select">
+                            <option value="">Select course Level</option>
+                            @if (courseLevels != null)
+                            {
+                                @foreach (var courseLevel in courseLevels)
+                                {
+                                    <option value="@courseLevel.CourseLevelId">@courseLevel.CourseLevelDescription</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Save Changes</button>
+                </form>
             </div>
-            <div class="form-group mb-3">
-                <label>Country</label>
-                <select class="form-select" @bind="countryId">
-                    <option value="">Select country</option>
-                    @if (countries != null)
-                    {
-                        @foreach (var country in countries)
-                        {
-                            <option value="@country.CountryId">@country.CountryName</option>
-                        }
-                    }
-                </select>
-            </div>
-            <div class="form-group mb-3">
-                <label>Institution</label>
-                <select @bind="course.InstitutionId" class="form-select">
-                    <option selected>Select institution</option>
-                    @if (institutions != null)
-                    {
-                        @foreach (var institution in institutions)
-                        {
-                            <option value="@institution.InstitutionId">@institution.InstitutionName</option>
-                        }
-                    }
-                </select>
-            </div>
-            <div class="form-group mb-3">
-                <label>Duration</label>
-                <input @bind="course.Duration" type="number" class="form-control" placeholder="Course duration">
-            </div>
-            <div class="form-group mb-3">
-                <label>Course Level</label>
-                <select @bind="course.CourseLevelId" class="form-select">
-                    <option value="">Select course Level</option>
-                    @if (courseLevels != null)
-                    {
-                        @foreach (var courseLevel in courseLevels)
-                        {
-                            <option value="@courseLevel.CourseLevelId">@courseLevel.CourseLevelDescription</option>
-                        }
-                    }
-                </select>
-            </div>
-            <button @onclick="Submit" class="btn btn-danger btn-sm" type="submit">Save Changes</button>
-        </form>
-    </div>
-}
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p class="lead">You are not authorized to access resource. <a href="/Identity/Account/Login">Login</a> to gain
+            access.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     [Parameter] public Guid Id { get; set; }
@@ -87,7 +95,8 @@
 
         if (Guid.TryParse(course?.Institution?.CountryId?.ToString(), out countryId))
         {
-            institutions = await Http.GetFromJsonAsync<List<InstitutionViewModel>>($"{NavigationManager.BaseUri}api/institutions?countryId={countryId}");
+            institutions = await
+            Http.GetFromJsonAsync<List<InstitutionViewModel>>($"{NavigationManager.BaseUri}api/institutions?countryId={countryId}");
         }
     }
 

@@ -3,104 +3,114 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<h3>Register Student Course</h3>
-<hr class="mb-3" />
+<AuthorizeView>
+    <Authorized>
+        <h3>Register Student Course</h3>
+        <hr class="mb-3" />
 
-<NavLink href="@($"students/{StudentId}")" class="btn btn-primary btn-sm">Back</NavLink><br /><br />
+        <NavLink href="@($"students/{StudentId}")" class="btn btn-primary btn-sm">Back</NavLink><br /><br />
 
-<div class="card bg-light">
-    <div class="card-body">
-        <form>
-            <input type="hidden" @bind="studentCourse.StudentId" />
-            <div class="form-group pb-3">
-                <label>Country</label>
-                @if (countries is not null)
-                {
-                    <select class="form-select" @onchange="LoadScholarshipsList">
-                        <option value="">Select country</option>
-                        @foreach (var country in countries)
+        <div class="card bg-light">
+            <div class="card-body">
+                <form>
+                    <input type="hidden" @bind="studentCourse.StudentId" />
+                    <div class="form-group pb-3">
+                        <label>Country</label>
+                        @if (countries is not null)
                         {
-                            <option value="@country.CountryId">@country.CountryName</option>
+                            <select class="form-select" @onchange="LoadScholarshipsList">
+                                <option value="">Select country</option>
+                                @foreach (var country in countries)
+                                {
+                                    <option value="@country.CountryId">@country.CountryName</option>
+                                }
+                            </select>
                         }
-                    </select>
-                }
-                else
-                {
-                    <select class="form-select">
-                        <option value="">Select country</option>
-                    </select>
-                }
-            </div>
-            <div class="form-group pb-3">
-                <label>Scholarship</label>
-                @if (scholarships is not null)
-                {
-                    <select class="form-select" disabled="@isDisabledScholarshipsList" @onchange="LoadInstitutionsList">
-                        <option value="">Select scholarship</option>
-                        @foreach (var scholarship in scholarships)
+                        else
                         {
-                            <option value="@scholarship.ScholarshipId">@scholarship.ScholarshipName</option>
+                            <select class="form-select">
+                                <option value="">Select country</option>
+                            </select>
                         }
-                    </select>
-                }
-                else
-                {
-                    <select class="form-select" disabled>
-                        <option value="">Select scholarship</option>
-                    </select>
-                }
-            </div>
-            <div class="form-group pb-3">
-                <label>Institution</label>
-                @if (institutions is not null)
-                {
-                    <select class="form-select" disabled="@isDisabledInstitutionsList" @onchange="LoadCoursesList">
-                        <option value="">Select institution</option>
-                        @foreach (var institution in institutions)
+                    </div>
+                    <div class="form-group pb-3">
+                        <label>Scholarship</label>
+                        @if (scholarships is not null)
                         {
-                            <option value="@institution.InstitutionId">@institution.InstitutionName</option>
+                            <select class="form-select" disabled="@isDisabledScholarshipsList"
+                            @onchange="LoadInstitutionsList">
+                                <option value="">Select scholarship</option>
+                                @foreach (var scholarship in scholarships)
+                                {
+                                    <option value="@scholarship.ScholarshipId">@scholarship.ScholarshipName</option>
+                                }
+                            </select>
                         }
-                    </select>
-                }
-                else
-                {
-                    <select class="form-select" disabled>
-                        <option value="">Select institution</option>
-                    </select>
-                }
-            </div>
-            <div class="form-group pb-3">
-                <label>Course</label>
-                @if (courses is not null)
-                {
-                    <select class="form-select" @bind="studentCourse.CourseId" disabled="@isDisabledCoursesList">
-                        <option value="">Select course</option>
-                        @foreach (var course in courses)
+                        else
                         {
-                            <option value="@course.CourseId">@course.CourseName</option>
+                            <select class="form-select" disabled>
+                                <option value="">Select scholarship</option>
+                            </select>
                         }
-                    </select>
-                }
-                else
-                {
-                    <select class="form-select">
-                        <option value="">Select course</option>
-                    </select>
-                }
+                    </div>
+                    <div class="form-group pb-3">
+                        <label>Institution</label>
+                        @if (institutions is not null)
+                        {
+                            <select class="form-select" disabled="@isDisabledInstitutionsList" @onchange="LoadCoursesList">
+                                <option value="">Select institution</option>
+                                @foreach (var institution in institutions)
+                                {
+                                    <option value="@institution.InstitutionId">@institution.InstitutionName</option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select class="form-select" disabled>
+                                <option value="">Select institution</option>
+                            </select>
+                        }
+                    </div>
+                    <div class="form-group pb-3">
+                        <label>Course</label>
+                        @if (courses is not null)
+                        {
+                            <select class="form-select" @bind="studentCourse.CourseId" disabled="@isDisabledCoursesList">
+                                <option value="">Select course</option>
+                                @foreach (var course in courses)
+                                {
+                                    <option value="@course.CourseId">@course.CourseName</option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select class="form-select">
+                                <option value="">Select course</option>
+                            </select>
+                        }
+                    </div>
+                    <div class="form-group pb-3">
+                        <label>Entry Year</label>
+                        <input class="form-control" placeholder="Entry year" @bind="studentCourse.EntryYear">
+                    </div>
+                    <div class="form-group pb-3">
+                        <label>Institution Registration Number</label>
+                        <input class="form-control" placeholder="Registration number issued on admission"
+                        @bind="studentCourse.CourseRegistrationNumber">
+                    </div>
+                    <button class="btn btn-danger btn-sm" type="submit" @onclick="RegisterStudentCourse">Register
+                        Course</button>
+                </form>
             </div>
-            <div class="form-group pb-3">
-                <label>Entry Year</label>
-                <input class="form-control" placeholder="Entry year" @bind="studentCourse.EntryYear">
-            </div>
-            <div class="form-group pb-3">
-                <label>Institution Registration Number</label>
-                <input class="form-control" placeholder="Registration number issued on admission"
-                @bind="studentCourse.CourseRegistrationNumber">
-            </div>
-            <button class="btn btn-danger btn-sm" type="submit" @onclick="RegisterStudentCourse">Register Course</button>
-        </form>
-    </div>
-</div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <p class="lead">You are not authorized to access resource. <a href="/Identity/Account/Login">Login</a> to gain
+            access.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     [Parameter] public Guid StudentId { get; set; }
@@ -133,7 +143,8 @@
             {
                 CountryId = countryId;
 
-                scholarships = await Http.GetFromJsonAsync<List<ScholarshipViewModel>>($"{NavigationManager.BaseUri}api/scholarships?countryId={countryId}");
+                scholarships = await
+                Http.GetFromJsonAsync<List<ScholarshipViewModel>>($"{NavigationManager.BaseUri}api/scholarships?countryId={countryId}");
                 isDisabledScholarshipsList = false;
             }
         }
@@ -167,7 +178,8 @@
         }
 
         ScholarshipId = scholarshipId;
-        institutions = await Http.GetFromJsonAsync<List<InstitutionViewModel>>($"{NavigationManager.BaseUri}api/institutions?countryId={CountryId}");
+        institutions = await
+        Http.GetFromJsonAsync<List<InstitutionViewModel>>($"{NavigationManager.BaseUri}api/institutions?countryId={CountryId}");
         isDisabledInstitutionsList = false;
     }
 
@@ -181,7 +193,8 @@
         }
 
         InstitutionId = institutionId;
-        courses = await Http.GetFromJsonAsync<List<CourseViewModel>>($"{NavigationManager.BaseUri}api/courses?institutionId={institutionId}");
+        courses = await
+        Http.GetFromJsonAsync<List<CourseViewModel>>($"{NavigationManager.BaseUri}api/courses?institutionId={institutionId}");
         isDisabledCoursesList = false;
     }
 
@@ -194,7 +207,8 @@
 
         studentCourse.ScholarshipId = ScholarshipId;
 
-        var response = await Http.PostAsJsonAsync<StudentCourseViewModel>($"{NavigationManager.BaseUri}api/studentcourses", studentCourse);
+        var response = await Http.PostAsJsonAsync<StudentCourseViewModel>($"{NavigationManager.BaseUri}api/studentcourses",
+        studentCourse);
 
         if (response.IsSuccessStatusCode)
         {
