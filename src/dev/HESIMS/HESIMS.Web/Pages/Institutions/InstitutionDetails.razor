@@ -5,44 +5,53 @@
 
 <PageTitle>HESIMS - Institution Details</PageTitle>
 
-@if (institution != null)
-{
-    <h3>@institution.InstitutionName Details</h3>
-    <hr class="mb3" />
+<AuthorizeView>
+    <Authorized>
+        @if (institution != null)
+        {
+            <h3>@institution.InstitutionName Details</h3>
+            <hr class="mb3" />
 
-    <div class="btn-group mb-3">
-        <NavLink href="institutions" class="btn btn-primary btn-sm" aria-current="page">Institutions List</NavLink>
-    </div>
+            <div class="btn-group mb-3">
+                <NavLink href="institutions" class="btn btn-primary btn-sm" aria-current="page">Institutions List</NavLink>
+            </div>
 
-    <div class="card bg-light mb-4">
-        <div class="card-body">
-            <form>
-                <input type="hidden" @bind="institution.InstitutionId" />
-                <div class="form-group mb-3">
-                    <label>Institution Name</label>
-                    <input type="text" class="form-control" @bind="institution.InstitutionName" placeholder="Enter insitution name">
+            <div class="card bg-light mb-4">
+                <div class="card-body">
+                    <form>
+                        <input type="hidden" @bind="institution.InstitutionId" />
+                        <div class="form-group mb-3">
+                            <label>Institution Name</label>
+                            <input type="text" class="form-control" @bind="institution.InstitutionName"
+                                placeholder="Enter insitution name">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label>Country</label>
+                            <select @bind="institution.CountryId" class="form-select">
+                                <option selected>Select a country</option>
+                                @if (Countries != null)
+                                {
+                                    @foreach (var country in Countries)
+                                    {
+                                        <option value="@country.CountryId">@country.CountryName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-danger btn-sm" @onclick="Submit" type="submit">Save Changes</button>
+                        </div>
+                    </form>
                 </div>
-                
-                <div class="form-group mb-3">
-                    <label>Country</label>
-                    <select @bind="institution.CountryId" class="form-select">
-                        <option selected>Select a country</option>
-                        @if (Countries != null)
-                        {
-                            @foreach (var country in Countries)
-                            {
-                                <option value="@country.CountryId">@country.CountryName</option>
-                            }
-                        }
-                    </select>
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-danger btn-sm" @onclick="Submit" type="submit">Save Changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-}
+            </div>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p class="lead">You are not authorized to access resource. <a href="/Identity/Account/Login">Login</a> to gain
+            access.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private InstitutionViewModel? institution = new();
@@ -52,7 +61,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        institution = await Http.GetFromJsonAsync<InstitutionViewModel>($"{NavigationManager.BaseUri}api/institutions/{InstitutionId}");
+        institution = await
+        Http.GetFromJsonAsync<InstitutionViewModel>($"{NavigationManager.BaseUri}api/institutions/{InstitutionId}");
         Countries = await Http.GetFromJsonAsync<List<CountryViewModel>>($"{NavigationManager.BaseUri}api/countries");
     }
 
@@ -60,7 +70,8 @@
     {
         if (institution != null)
         {
-            var response = await Http.PutAsJsonAsync<InstitutionViewModel>($"{NavigationManager.BaseUri}api/institutions/{InstitutionId}", institution);
+            var response = await
+            Http.PutAsJsonAsync<InstitutionViewModel>($"{NavigationManager.BaseUri}api/institutions/{InstitutionId}", institution);
             if (response.IsSuccessStatusCode)
             {
                 NavigationManager.NavigateTo($"{NavigationManager.BaseUri}institutions/{InstitutionId}", true);

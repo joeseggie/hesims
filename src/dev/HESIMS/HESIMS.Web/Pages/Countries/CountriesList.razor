@@ -4,47 +4,55 @@
 
 <PageTitle>HESIMS - Scholarship Offering Countries</PageTitle>
 
-<h3>Scholarship Offering Countries</h3>
-<hr class="mb-3" />
+<AuthorizeView>
+    <Authorized>
+        <h3>Scholarship Offering Countries</h3>
+        <hr class="mb-3" />
+        
+        <AddCountry OnCountrySubmit="AddCountryAsync" />
 
-<AddCountry OnCountrySubmit="AddCountryAsync" />
-
-<table class="table table-striped table-sm">
-    <thead>
-        <tr>
-            <th>Country</th>
-            <th>Code</th>
-            <th>Scholarships</th>
-            <th>Insitutions</th>
-            <th>Students</th>
-        </tr>
-    </thead>
-    @if (countries != null && countries.Count > 0)
-    {
-        <tbody>
-            @foreach (var country in countries)
-            {
+        <table class="table table-striped table-sm">
+            <thead>
                 <tr>
-                    <td>
-                        <NavLink href="@($"countries/{country.CountryId}")">@country.CountryName</NavLink>
-                    </td>
-                    <td>@country.CountryCode</td>
-                    <td class="text-align-center">@country.Scholarships?.Count()</td>
-                    <td>@country.Institutions?.Count()</td>
-                    <td></td>
+                    <th>Country</th>
+                    <th>Code</th>
+                    <th>Scholarships</th>
+                    <th>Insitutions</th>
+                    <th>Students</th>
                 </tr>
+            </thead>
+            @if (countries != null && countries.Count > 0)
+            {
+                <tbody>
+                    @foreach (var country in countries)
+                    {
+                        <tr>
+                            <td>
+                                <NavLink href="@($"countries/{country.CountryId}")">@country.CountryName</NavLink>
+                            </td>
+                            <td>@country.CountryCode</td>
+                            <td class="text-align-center">@country.Scholarships?.Count()</td>
+                            <td>@country.Institutions?.Count()</td>
+                            <td></td>
+                        </tr>
+                    }
+                </tbody>
             }
-        </tbody>
-    }
-    else
-    {
-        <tbody>
-            <tr>
-                <td colspan="4">No records found.</td>
-            </tr>
-        </tbody>
-    }
-</table>
+            else
+            {
+                <tbody>
+                    <tr>
+                        <td colspan="4">No records found.</td>
+                    </tr>
+                </tbody>
+            }
+        </table>
+    </Authorized>
+    <NotAuthorized>
+        <p class="lead">You are not authorized to access resource. <a href="/Identity/Account/Login">Login</a> to gain
+            access.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private List<CountryViewModel>? countries;
