@@ -33,15 +33,3 @@ jobs:
       with:
         name: HESIMS
         path: ./src/dev/HESIMS/HESIMS.Web/bin/Release/net7.0/publish
-
-    - name: Zip Release Package
-      uses: thedoctor0/zip-release@0.7.1
-      with:
-        type: 'zip'
-        filename: 'HESIMS.zip'
-        path: './src/dev/HESIMS/HESIMS.Web/bin/Release/net7.0/publish'
-    
-    - name: Upload Release Package
-      uses: ncipollo/release-action@v1.12.0
-      with:
-        artifacts: "HESIMS.zip"
